@@ -1,0 +1,9 @@
+﻿<Application x:Class="Activity.UI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Activity.UI"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <local:BoolToOpacityConverter x:Key="boolToOpacity" />
+    </Application.Resources>
+</Application>
