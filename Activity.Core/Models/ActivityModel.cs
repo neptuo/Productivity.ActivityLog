@@ -11,11 +11,27 @@ namespace Activity.Core.Models
     [XmlRoot("Activity")]
     public class ActivityModel : ObservableObject<ActivityModel>
     {
+        private int order;
         private ImageSource icon;
         private string processFileName;
         private TimeSpan usedTime;
         private IntPtr windowHandle;
         private ObservableCollection<ActivityRunModel> previousRuns;
+
+        internal Func<long> GetAllTicks;
+
+        public int Order
+        {
+            get { return order; }
+            set
+            {
+                if (order != value)
+                {
+                    order = value;
+                    OnPropertyChanged(m => m.Order);
+                }
+            }
+        }
 
         [XmlIgnore]
         public ImageSource Icon
@@ -47,6 +63,7 @@ namespace Activity.Core.Models
             {
                 usedTime = value;
                 OnPropertyChanged(m => m.UsedTime);
+                OnPropertyChanged(m => m.Percentage);
             }
         }
 
@@ -82,9 +99,20 @@ namespace Activity.Core.Models
             get { return WindowHandle.ToInt32() != 0; }
         }
 
+        [XmlIgnore]
+        public string Percentage
+        {
+            get { return String.Format("{0}%", GetAllTicks != null ? (long)(((double)UsedTime.Ticks / GetAllTicks()) * 100) : 0); }
+        }
+
         public ActivityModel()
         {
             PreviousRuns = new ObservableCollection<ActivityRunModel>();
+        }
+
+        public void OnPercentageChanged()
+        {
+            OnPropertyChanged(m => m.Percentage);
         }
     }
 

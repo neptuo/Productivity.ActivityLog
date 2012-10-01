@@ -66,10 +66,12 @@ namespace Activity.Core
                 {
                     model = new ActivityModel
                     {
+                        Order = CurrentActivities.Count + 1,
                         Icon = IconHelper.GetIcon(fileName),
                         ProcessFileName = fileName,
                         UsedTime = new TimeSpan(),
-                        WindowHandle = args.WindowHandle
+                        WindowHandle = args.WindowHandle,
+                        GetAllTicks = GetAllTicks
                     };
                     Activities.Add(model);
                     CurrentActivities.Add(model);
@@ -80,6 +82,12 @@ namespace Activity.Core
                     currentActivity = model;
                     if (CurrentActivityChanged != null)
                         CurrentActivityChanged(this, new CurrentActivityEventArgs(currentActivity));
+                }
+
+                if (model != null)
+                {
+                    foreach (ActivityModel item in Activities)
+                        item.OnPercentageChanged();
                 }
             }
             catch (Exception e) 
@@ -149,15 +157,26 @@ namespace Activity.Core
                 try
                 {
                     Activities = (ObservableCollection<ActivityModel>)serializer.Deserialize(reader);
+                    int order = 0;
                     foreach (ActivityModel model in Activities)
                     {
+                        model.Order = ++order;
                         model.Icon = IconHelper.GetIcon(model.ProcessFileName);
+                        model.GetAllTicks = GetAllTicks;
                         allActivities.Add(model.ProcessFileName);
                     }
-                    //TODO: Načítat dnešní čas!
                 }
                 catch (Exception) { }
             }
+        }
+
+        private long GetAllTicks()
+        {
+            long result = 0;
+            foreach (ActivityModel model in Activities)
+                result += model.UsedTime.Ticks;
+
+            return result;
         }
     }
 
