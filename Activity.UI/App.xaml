@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:Activity.UI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVisibility" />
         <local:BoolToOpacityConverter x:Key="boolToOpacity" />
+        <local:InversedBoolToVisibilityConverter x:Key="inversedBoolToVisibility" />
     </Application.Resources>
 </Application>

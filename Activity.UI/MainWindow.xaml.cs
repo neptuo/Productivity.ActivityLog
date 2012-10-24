@@ -118,5 +118,15 @@ namespace Activity.UI
             Left = SystemParameters.WorkArea.Width - (e != null ? e.NewSize.Width : Width);
             Top = SystemParameters.WorkArea.Height - (e != null ? e.NewSize.Height : Height);
         }
+
+        private void mniShowHide_Click(object sender, RoutedEventArgs e)
+        {
+            ActivityModel model = lvwModels.SelectedItem as ActivityModel;
+            if (model != null)
+            {
+                model.IsHidden = !model.IsHidden;
+                viewModel.UpdateFilter(service);
+            }
+        }
     }
 }

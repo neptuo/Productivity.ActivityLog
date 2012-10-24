@@ -17,6 +17,7 @@ namespace Activity.Core.Models
         private TimeSpan usedTime;
         private IntPtr windowHandle;
         private ObservableCollection<ActivityRunModel> previousRuns;
+        private bool isHidden;
 
         internal Func<long> GetAllTicks;
 
@@ -103,6 +104,19 @@ namespace Activity.Core.Models
         public string Percentage
         {
             get { return String.Format("{0}%", GetAllTicks != null ? (long)(((double)UsedTime.Ticks / GetAllTicks()) * 100) : 0); }
+        }
+
+        public bool IsHidden
+        {
+            get { return isHidden; }
+            set
+            {
+                if (isHidden != value)
+                {
+                    isHidden = value;
+                    OnPropertyChanged(m => m.IsHidden);
+                }
+            }
         }
 
         public ActivityModel()
