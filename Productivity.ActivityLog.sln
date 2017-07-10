@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activity.TestConsole", "src
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Old", "Old", "{8B1E52E9-4989-4C1F-9F91-96D3FF9217D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neptuo.Productivity.ActivityLog", "src\Neptuo.Productivity.ActivityLog\Neptuo.Productivity.ActivityLog.csproj", "{3870BD7F-5139-49A0-879B-D6637591BEED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neptuo.Productivity.ActivityLog.UI", "src\Neptuo.Productivity.ActivityLog.UI\Neptuo.Productivity.ActivityLog.UI.csproj", "{878E0D6B-7D54-4ABB-8DFE-2C7EBB86BC89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,14 @@ Global
 		{BFD4B07C-5B8D-4E1A-BAC5-E6E102721C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFD4B07C-5B8D-4E1A-BAC5-E6E102721C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFD4B07C-5B8D-4E1A-BAC5-E6E102721C2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3870BD7F-5139-49A0-879B-D6637591BEED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3870BD7F-5139-49A0-879B-D6637591BEED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3870BD7F-5139-49A0-879B-D6637591BEED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3870BD7F-5139-49A0-879B-D6637591BEED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{878E0D6B-7D54-4ABB-8DFE-2C7EBB86BC89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{878E0D6B-7D54-4ABB-8DFE-2C7EBB86BC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{878E0D6B-7D54-4ABB-8DFE-2C7EBB86BC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{878E0D6B-7D54-4ABB-8DFE-2C7EBB86BC89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
