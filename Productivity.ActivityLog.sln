@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activity.Core", "Activity.Core\Activity.Core.csproj", "{42EDC99C-97C8-4207-B102-8FBDD58EE627}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activity.Core", "src\Activity.Core\Activity.Core.csproj", "{42EDC99C-97C8-4207-B102-8FBDD58EE627}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activity.UI", "Activity.UI\Activity.UI.csproj", "{B8F76476-7317-4C6D-BA3F-C2DA3DAE3DF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activity.UI", "src\Activity.UI\Activity.UI.csproj", "{B8F76476-7317-4C6D-BA3F-C2DA3DAE3DF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activity.TestConsole", "Activity.TestConsole\Activity.TestConsole.csproj", "{BFD4B07C-5B8D-4E1A-BAC5-E6E102721C2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activity.TestConsole", "src\Activity.TestConsole\Activity.TestConsole.csproj", "{BFD4B07C-5B8D-4E1A-BAC5-E6E102721C2D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Old", "Old", "{8B1E52E9-4989-4C1F-9F91-96D3FF9217D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +32,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{42EDC99C-97C8-4207-B102-8FBDD58EE627} = {8B1E52E9-4989-4C1F-9F91-96D3FF9217D2}
+		{B8F76476-7317-4C6D-BA3F-C2DA3DAE3DF1} = {8B1E52E9-4989-4C1F-9F91-96D3FF9217D2}
+		{BFD4B07C-5B8D-4E1A-BAC5-E6E102721C2D} = {8B1E52E9-4989-4C1F-9F91-96D3FF9217D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
