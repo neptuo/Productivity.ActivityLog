@@ -100,6 +100,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Activity.Core\Activity.Core.csproj">
+      <Project>{42edc99c-97c8-4207-b102-8fbdd58ee627}</Project>
+      <Name>Activity.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neptuo.Productivity.ActivityLog.Events\Neptuo.Productivity.ActivityLog.Events.csproj">
+      <Project>{aec535c4-6ec2-4df2-a238-7e430d6a839f}</Project>
+      <Name>Neptuo.Productivity.ActivityLog.Events</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Neptuo.Productivity.ActivityLog\Neptuo.Productivity.ActivityLog.csproj">
       <Project>{3870bd7f-5139-49a0-879b-d6637591beed}</Project>
       <Name>Neptuo.Productivity.ActivityLog</Name>
@@ -109,6 +117,11 @@
     <Resource Include="..\..\assets\Activity-Monitor.ico">
       <Link>UI\Assets\Activity-Monitor.ico</Link>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Neptuo">
+      <Version>5.5.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
