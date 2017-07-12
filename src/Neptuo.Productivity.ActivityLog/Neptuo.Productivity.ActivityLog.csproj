@@ -58,8 +58,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\EventStoreHandler.cs" />
+    <Compile Include="Data\FileEventStore.cs" />
+    <Compile Include="Data\IEventStore.cs" />
     <Compile Include="DomainService.cs" />
     <Compile Include="DomainService.ProcessInfo.cs" />
+    <Compile Include="Formatters\SimpleFormatter.cs" />
     <Compile Include="ProcessChangedEventArgs.cs" />
     <Compile Include="ProcessChangedType.cs" />
     <Compile Include="ProcessMonitor.cs" />
@@ -72,6 +76,9 @@
     </PackageReference>
     <PackageReference Include="Neptuo.Events">
       <Version>1.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="Neptuo.EventSourcing">
+      <Version>1.2.1</Version>
     </PackageReference>
     <PackageReference Include="Neptuo.EventSourcing.Domains">
       <Version>1.3.0</Version>

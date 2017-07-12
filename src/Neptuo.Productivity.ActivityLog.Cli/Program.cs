@@ -1,6 +1,8 @@
 ﻿using Neptuo.Events;
 using Neptuo.Events.Handlers;
+using Neptuo.Productivity.ActivityLog.Data;
 using Neptuo.Productivity.ActivityLog.Events;
+using Neptuo.Productivity.ActivityLog.Formatters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +17,12 @@ namespace Neptuo.Productivity.ActivityLog.Cli
         static void Main(string[] args)
         {
             Program program = new Program();
-
+            FileEventStore store = new FileEventStore(new SimpleFormatter(), GetFileName);
+            
             DefaultEventManager eventManager = new DefaultEventManager();
-            eventManager.AddAll(program);
+            eventManager
+                .AddAll(program)
+                .AddAll(new EventStoreHandler(store));
 
             DomainService service = new DomainService(eventManager);
 
@@ -33,6 +38,11 @@ namespace Neptuo.Productivity.ActivityLog.Cli
             service.Dispose();
             Console.WriteLine("Exiting now...");
             WriteSeparator();
+        }
+
+        private static string GetFileName(DateTime dateTime)
+        {
+            return $"{dateTime.ToString("yyyy-MM-dd")}.alog";
         }
 
         public Task HandleAsync(ActivityStarted payload)
