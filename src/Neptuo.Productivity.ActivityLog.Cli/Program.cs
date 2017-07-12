@@ -37,7 +37,6 @@ namespace Neptuo.Productivity.ActivityLog.Cli
 
             service.Dispose();
             Console.WriteLine("Exiting now...");
-            WriteSeparator();
         }
 
         private static string GetFileName(DateTime dateTime)

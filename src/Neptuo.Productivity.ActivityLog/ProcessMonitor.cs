@@ -22,7 +22,7 @@ namespace Neptuo.Productivity.ActivityLog
                 throw Ensure.Exception.InvalidOperation($"The '{nameof(ProcessMonitor)}' is already running.");
 
             cancellationSource = new CancellationTokenSource();
-            Task.Factory.StartNew(DoMonitor, cancellationSource.Token);
+            Task.Factory.StartNew(DoMonitor);
         }
 
         private async void DoMonitor()
@@ -32,7 +32,7 @@ namespace Neptuo.Productivity.ActivityLog
             string lastTitle = string.Empty;
             while (true)
             {
-                await Task.Delay(1000, cancellationSource.Token);
+                await Task.Delay(1000);
 
                 if (cancellationSource.Token.IsCancellationRequested)
                     break;
