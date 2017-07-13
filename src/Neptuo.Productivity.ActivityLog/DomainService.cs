@@ -2,6 +2,7 @@
 using Neptuo.Productivity.ActivityLog.Events;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -51,10 +52,24 @@ namespace Neptuo.Productivity.ActivityLog
         {
             if (!processCache.TryGetValue(processId, out ProcessInfo info))
             {
-                Process process = Process.GetProcessById(processId);
+                string path = null;
+                try
+                {
+                    Process process = Process.GetProcessById(processId);
+                    path = process.MainModule?.FileName;
+                    
+                }
+                catch(Win32Exception e)
+                {
+                    StringBuilder builder = new StringBuilder(1024);
+                    Win32.GetProcessImageFileName(new IntPtr(processId), builder, builder.Capacity);
+
+                    path = builder.ToString();
+                }
+
                 processCache[processId] = info = new ProcessInfo
                 {
-                    Path = process.MainModule?.FileName,
+                    Path = path
                 };
             }
 

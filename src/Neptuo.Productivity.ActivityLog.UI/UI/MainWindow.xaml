@@ -3,10 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Neptuo.Productivity.ActivityLog.UI"
-        mc:Ignorable="d"
+        xmlns:dd="clr-namespace:Neptuo.Productivity.ActivityLog.UI.DesignData"
+        xmlns:converters="clr-namespace:Neptuo.Productivity.ActivityLog.UI.Views.Converters"
+        mc:Ignorable="d" d:DataContext="{x:Static dd:ViewModelLocator.Overview}"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <Window.Resources>
+        <converters:BoolConverter x:Key="TrueToForegroundConverter" TrueValue="Yellow" FalseValue="Transparent" />
+    </Window.Resources>
+    <ItemsControl ItemsSource="{Binding Activities}">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal" Background="{Binding IsForeground, Converter={StaticResource TrueToForegroundConverter}}">
+                    <Image Source="{Binding Icon}" Width="24" />
+                    <TextBlock Text="{Binding ApplicationName}" VerticalAlignment="Center" />
+                </StackPanel>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
 </Window>

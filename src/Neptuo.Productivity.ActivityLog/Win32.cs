@@ -23,8 +23,7 @@ namespace Neptuo.Productivity.ActivityLog
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowThreadProcessId(IntPtr handle, out uint processId);
-
-
+        
         public static string GetWindowText(IntPtr handle)
         {
             int count = Win32.GetWindowTextLength(handle) + 1;
@@ -33,5 +32,8 @@ namespace Neptuo.Productivity.ActivityLog
 
             return builder.ToString();
         }
+
+        [DllImport("psapi.dll")]
+        public static extern uint GetProcessImageFileName(IntPtr handle, StringBuilder fileName, int size);
     }
 }
