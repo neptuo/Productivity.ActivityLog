@@ -2,14 +2,14 @@
 using Neptuo.Observables.Collections;
 using Neptuo.Productivity.ActivityLog.Events;
 using Neptuo.Productivity.ActivityLog.Services;
-using Neptuo.Productivity.ActivityLog.UI.ViewModels;
+using Neptuo.Productivity.ActivityLog.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Neptuo.Productivity.ActivityLog.UI.DesignData
+namespace Neptuo.Productivity.ActivityLog.Views.DesignData
 {
     internal class ViewModelLocator
     {
@@ -22,7 +22,6 @@ namespace Neptuo.Productivity.ActivityLog.UI.DesignData
                 if (overview == null)
                 {
                     overview = new OverviewViewModel(new Timer(), new Synchronizer());
-                    //(overview.Activities as ObservableCollection<ActivityOverviewViewModel>).Add(new ActivityOverviewViewModel("C:/Windows/Notepad.exe"));
                     EventManager.AddAll(overview);
                     GenerateEventStream();
                 }
@@ -33,19 +32,6 @@ namespace Neptuo.Productivity.ActivityLog.UI.DesignData
 
         public static DefaultEventManager EventManager { get; } = new DefaultEventManager();
 
-        public class Timer : ITimer
-        {
-            public event Action Tick;
-        }
-
-        public class Synchronizer : ISynchronizer
-        {
-            public void Run(Action handler)
-            {
-                handler();
-            }
-        }
-        
         private static void GenerateEventStream()
         {
             DateTime current = DateTime.Now;

@@ -1,6 +1,7 @@
 ﻿using Neptuo.Events;
 using Neptuo.Productivity.ActivityLog.Services;
-using Neptuo.Productivity.ActivityLog.UI.ViewModels;
+using Neptuo.Productivity.ActivityLog.ViewModels;
+using Neptuo.Productivity.ActivityLog.Views;
 using Neptuo.Windows.Threading;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 
-namespace Neptuo.Productivity.ActivityLog.UI
+namespace Neptuo.Productivity.ActivityLog
 {
     /// <summary>
     /// Interaction logic for App.xaml

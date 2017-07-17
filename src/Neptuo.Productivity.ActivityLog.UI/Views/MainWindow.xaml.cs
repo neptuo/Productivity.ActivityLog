@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Neptuo.Productivity.ActivityLog.Views.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Neptuo.Productivity.ActivityLog.UI
+namespace Neptuo.Productivity.ActivityLog.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,6 +24,18 @@ namespace Neptuo.Productivity.ActivityLog.UI
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (WindowDrag.TryMove(e))
+                DragMove();
+        }
+
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Close();
         }
     }
 }

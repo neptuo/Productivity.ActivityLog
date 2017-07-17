@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Neptuo.Productivity.ActivityLog.UI.App</StartupObject>
+    <StartupObject>Neptuo.Productivity.ActivityLog.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>..\..\assets\Activity-Monitor.ico</ApplicationIcon>
@@ -77,31 +77,38 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="UI\App.xaml">
+    <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Services\IconExtractor.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
-    <Compile Include="UI\DesignData\ViewModelLocator.cs" />
-    <Compile Include="UI\ViewModels\ActivityOverviewViewModel.cs" />
-    <Compile Include="UI\ViewModels\OverviewViewModel.cs" />
-    <Compile Include="UI\Views\Converters\BoolConverter.cs" />
-    <Compile Include="UI\Views\Converters\CuttingConverter.cs" />
-    <Compile Include="UI\Views\Converters\NullConverter.cs" />
-    <Page Include="UI\MainWindow.xaml">
+    <Compile Include="Views\Controls\WindowDrag.cs" />
+    <Compile Include="Views\DesignData\Synchronizer.cs" />
+    <Compile Include="Views\DesignData\Timer.cs" />
+    <Compile Include="Views\DesignData\ViewModelLocator.cs" />
+    <Compile Include="ViewModels\ActivityOverviewViewModel.cs" />
+    <Compile Include="ViewModels\OverviewViewModel.cs" />
+    <Compile Include="Views\Converters\BoolConverter.cs" />
+    <Compile Include="Views\Converters\CuttingConverter.cs" />
+    <Compile Include="Views\Converters\NullConverter.cs" />
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="UI\App.xaml.cs">
+    <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Themes\Dark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -154,6 +161,9 @@
     <PackageReference Include="Neptuo.Windows.Threading">
       <Version>1.0.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace Neptuo.Productivity.ActivityLog.UI.ViewModels
+namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
     public class ActivityOverviewViewModel : ObservableObject
     {

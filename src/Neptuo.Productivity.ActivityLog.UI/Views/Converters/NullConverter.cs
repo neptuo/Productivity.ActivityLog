@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace Neptuo.Productivity.ActivityLog.UI.Views.Converters
+namespace Neptuo.Productivity.ActivityLog.Views.Converters
 {
     public class NullConverter : IValueConverter
     {

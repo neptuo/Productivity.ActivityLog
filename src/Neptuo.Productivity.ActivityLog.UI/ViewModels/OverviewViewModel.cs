@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Neptuo.Productivity.ActivityLog.UI.ViewModels
+namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
     public class OverviewViewModel : IEventHandler<ActivityStarted>, IEventHandler<ActivityEnded>
     {
