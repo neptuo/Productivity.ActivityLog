@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog.UI.DesignData
 {
-    public class ViewModelLocator
+    internal class ViewModelLocator
     {
         private static OverviewViewModel overview;
 
@@ -22,10 +22,9 @@ namespace Neptuo.Productivity.ActivityLog.UI.DesignData
                 if (overview == null)
                 {
                     overview = new OverviewViewModel(new Timer(), new Synchronizer());
-                    (overview.Activities as ObservableCollection<ActivityOverviewViewModel>).Add(new ActivityOverviewViewModel("C:/Windows/Notepad.exe"));
+                    //(overview.Activities as ObservableCollection<ActivityOverviewViewModel>).Add(new ActivityOverviewViewModel("C:/Windows/Notepad.exe"));
                     EventManager.AddAll(overview);
-
-                    //EventManager.PublishAsync(new ActivityStarted("C:/Windows/Notepad.exe", "Notepad", DateTime.Now)).Wait();
+                    GenerateEventStream();
                 }
 
                 return overview;
@@ -45,6 +44,41 @@ namespace Neptuo.Productivity.ActivityLog.UI.DesignData
             {
                 handler();
             }
+        }
+        
+        private static void GenerateEventStream()
+        {
+            DateTime current = DateTime.Now;
+
+            DateTime AddSeconds(int value = 0)
+            {
+                current = current.AddSeconds(value);
+                return current;
+            }
+
+            DateTime AddMinutes(int value = 0)
+            {
+                current = current.AddMinutes(value);
+                return current;
+            }
+
+            void ActivityStarted(string path, string title, DateTime? when = null)
+                => EventManager.PublishAsync(new ActivityStarted(path, title, current)).Wait();
+
+            void ActivityEnded(string path, string title, DateTime when)
+                => EventManager.PublishAsync(new ActivityEnded(path, title, when)).Wait();
+
+            void Activity(string path, string title, DateTime ended)
+            {
+                ActivityStarted(path, title);
+                ActivityEnded(path, title, ended);
+            }
+
+            // Activities...
+
+            Activity(@"C:\Windows\Notepad.exe", "Notepad", AddSeconds(20));
+            Activity(@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe", "Microsoft Visual Studio", AddMinutes(20));
+            ActivityStarted(@"C:\Windows\Explorer.exe", "This PC");
         }
     }
 }

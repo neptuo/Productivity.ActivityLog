@@ -10,14 +10,18 @@
     <Window.Resources>
         <converters:BoolConverter x:Key="TrueToForegroundConverter" TrueValue="Yellow" FalseValue="Transparent" />
     </Window.Resources>
-    <ItemsControl ItemsSource="{Binding Activities}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <StackPanel Orientation="Horizontal" Background="{Binding IsForeground, Converter={StaticResource TrueToForegroundConverter}}">
-                    <Image Source="{Binding Icon}" Width="24" />
-                    <TextBlock Text="{Binding ApplicationName}" VerticalAlignment="Center" />
-                </StackPanel>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+    <StackPanel>
+        <ItemsControl ItemsSource="{Binding Activities}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="4" Background="{Binding IsForeground, Converter={StaticResource TrueToForegroundConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{Binding Icon}" Width="24" />
+                            <TextBlock Text="{Binding ApplicationName}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
 </Window>

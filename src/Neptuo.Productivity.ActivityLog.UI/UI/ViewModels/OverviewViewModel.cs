@@ -17,6 +17,8 @@ namespace Neptuo.Productivity.ActivityLog.UI.ViewModels
         private readonly ISynchronizer synchronizer;
         private readonly ObservableCollection<ActivityOverviewViewModel> activities;
 
+        public string Title { get; set; } = "Hello!";
+
         public IReadOnlyList<ActivityOverviewViewModel> Activities
         {
             get { return activities; }
