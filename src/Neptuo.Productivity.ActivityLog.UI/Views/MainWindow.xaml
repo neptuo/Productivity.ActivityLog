@@ -10,21 +10,32 @@
         ResizeMode="CanMinimize" WindowStyle="None" Background="{StaticResource BackgroundBrush}"
         PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown">
     <Window.Resources>
+        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource PlainButtonStyle}">
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+            <Setter Property="Background" Value="Red" />
+            <Setter Property="Padding" Value="4,1" />
+            <Setter Property="BorderThickness" Value="0,0,0,0" />
+        </Style>
     </Window.Resources>
     <Border Style="{StaticResource WindowBorderStyle}" Padding="0">
-        <StackPanel>
-            <ItemsControl ItemsSource="{Binding Activities}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Padding="4" Background="{Binding IsForeground, Converter={StaticResource ActiveBorderConverter}}">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{Binding Icon}" Width="24" Margin="0,0,4,0" />
-                                <TextBlock Text="{Binding ApplicationName}" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+        <Grid>
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding Activities}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="4" Background="{Binding IsForeground, Converter={StaticResource ActiveBorderConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon}" Width="24" Margin="0,0,4,0" />
+                                    <TextBlock Text="{Binding ApplicationName}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            <Button x:Name="Close" Content="X" Click="Close_Click" Style="{StaticResource CloseButtonStyle}" />
+        </Grid>
     </Border>
 </Window>

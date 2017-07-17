@@ -37,5 +37,10 @@ namespace Neptuo.Productivity.ActivityLog.Views
             if (e.Key == Key.Escape)
                 Close();
         }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }
