@@ -7,7 +7,7 @@
     <ProjectGuid>{878E0D6B-7D54-4ABB-8DFE-2C7EBB86BC89}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Neptuo.Productivity.ActivityLog</RootNamespace>
-    <AssemblyName>Neptuo.Productivity.ActivityLog.UI</AssemblyName>
+    <AssemblyName>Productivity.ActivityLog.UI</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -81,6 +81,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="Services\IconExtractor.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
