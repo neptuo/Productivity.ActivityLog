@@ -32,8 +32,5 @@ namespace Neptuo.Productivity.ActivityLog
 
             return builder.ToString();
         }
-
-        [DllImport("psapi.dll")]
-        public static extern uint GetProcessImageFileName(IntPtr handle, StringBuilder fileName, int size);
     }
 }

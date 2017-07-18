@@ -2,7 +2,6 @@
 using Neptuo.Productivity.ActivityLog.Events;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -33,47 +32,44 @@ namespace Neptuo.Productivity.ActivityLog
             {
                 if (e.OriginalProcessId != null)
                 {
-                    ProcessInfo originalInfo = GetInfo(e.OriginalProcessId.Value);
-                    await eventDispatcher.PublishAsync(new ActivityEnded(originalInfo.Path, e.OriginalTitle, now));
+                    if (TryGetInfo(e.OriginalProcessId.Value, out ProcessInfo originalInfo))
+                        await eventDispatcher.PublishAsync(new ActivityEnded(originalInfo.Path, e.OriginalTitle, now));
                 }
 
-                ProcessInfo currentInfo = GetInfo(e.CurrentProcessId);
-                await eventDispatcher.PublishAsync(new ActivityStarted(currentInfo.Path, e.CurrentTitle, now));
+                if (TryGetInfo(e.CurrentProcessId, out ProcessInfo currentInfo))
+                    await eventDispatcher.PublishAsync(new ActivityStarted(currentInfo.Path, e.CurrentTitle, now));
             }
             else if (e.Type == ProcessChangedType.Title)
             {
-                ProcessInfo info = GetInfo(e.CurrentProcessId);
-                await eventDispatcher.PublishAsync(new ActivityEnded(info.Path, e.OriginalTitle, now));
-                await eventDispatcher.PublishAsync(new ActivityStarted(info.Path, e.CurrentTitle, now));
+                if (TryGetInfo(e.CurrentProcessId, out ProcessInfo info))
+                {
+                    await eventDispatcher.PublishAsync(new ActivityEnded(info.Path, e.OriginalTitle, now));
+                    await eventDispatcher.PublishAsync(new ActivityStarted(info.Path, e.CurrentTitle, now));
+                }
             }
         }
 
-        private ProcessInfo GetInfo(int processId)
+        private bool TryGetInfo(int processId, out ProcessInfo info)
         {
-            if (!processCache.TryGetValue(processId, out ProcessInfo info))
+            if (processCache.TryGetValue(processId, out info))
+                return true;
+
+            string path = null;
+            try
             {
-                string path = null;
-                try
-                {
-                    Process process = Process.GetProcessById(processId);
-                    path = process.MainModule?.FileName;
-                    
-                }
-                catch(Win32Exception e)
-                {
-                    StringBuilder builder = new StringBuilder(1024);
-                    Win32.GetProcessImageFileName(new IntPtr(processId), builder, builder.Capacity);
-
-                    path = builder.ToString();
-                }
-
-                processCache[processId] = info = new ProcessInfo
-                {
-                    Path = path
-                };
+                Process process = Process.GetProcessById(processId);
+                path = process.MainModule?.FileName;
+            }
+            catch (Exception)
+            {
+                return false;
             }
 
-            return info;
+            processCache[processId] = info = new ProcessInfo
+            {
+                Path = path
+            };
+            return true;
         }
 
         protected override void DisposeManagedResources()
