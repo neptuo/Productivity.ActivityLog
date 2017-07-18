@@ -1,7 +1,9 @@
-﻿using Neptuo.Observables;
+﻿using Neptuo;
+using Neptuo.Observables;
 using Neptuo.Productivity.ActivityLog.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -13,6 +15,10 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
     public class ActivityOverviewViewModel : ObservableObject
     {
+        private TimeSpan lastDuration;
+        private DateTime lastStartedAt;
+        private DateTime lastEndedAt;
+
         public ImageSource Icon { get; private set; }
         public string ApplicationPath { get; private set; }
         public string ApplicationName { get; set; }
@@ -59,32 +65,33 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             }
         }
 
-        public ActivityOverviewViewModel(string applicationPath)
+        public ActivityOverviewViewModel(string applicationName, string applicationPath)
         {
-            //Ensure.NotNullOrEmpty(applicationPath, "applicationPath");
-            Ensure.NotNull(applicationPath, "applicationPath");
+            Ensure.NotNullOrEmpty(applicationName, "applicationName");
+            Ensure.NotNullOrEmpty(applicationPath, "applicationPath");
             ApplicationPath = applicationPath;
-
-            if (ApplicationPath != String.Empty)
-            {
-                ApplicationName = Path.GetFileName(ApplicationPath);
-                Icon = IconExtractor.Get(ApplicationPath);
-            }
+            ApplicationName = applicationName;
+            Icon = IconExtractor.Get(applicationPath);
         }
 
         public void StartAt(DateTime startedAt)
         {
             IsForeground = true;
+            lastStartedAt = startedAt;
         }
 
         public void StopAt(DateTime endedAt)
         {
             IsForeground = false;
+            lastEndedAt = endedAt;
+            lastDuration = lastDuration + (lastEndedAt - lastStartedAt);
+            Duration = lastDuration;
         }
 
-        public void Update()
+        public void Update(DateTime now)
         {
-
+            if (IsForeground)
+                Duration = lastDuration + (now - lastStartedAt);
         }
     }
 }

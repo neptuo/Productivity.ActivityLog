@@ -8,10 +8,12 @@
                 <ResourceDictionary Source="/Views/Themes/Dark.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!--<BitmapImage x:Key="IconImage" UriSource="../../Assets/Activity-Monitor.ico" />-->
+            <BitmapImage x:Key="IconImage" UriSource="/Views/Assets/Activity-Monitor.ico" />
             
             <converters:CuttingConverter x:Key="ZeroOrLowerToVisibleConverter" EdgeValue="0" GreaterValue="Collapsed" LowerValue="Visible" EqualValue="Visible" />
             <converters:BoolConverter x:Key="ActiveBorderConverter" TrueValue="{StaticResource ActiveBrush}" FalseValue="{StaticResource InactiveBrush}" />
+            <converters:BoolConverter x:Key="ActiveBackgroundConverter" TrueValue="{StaticResource ActiveBrush}" FalseValue="{StaticResource BackgroundBrush}" />
+            <converters:FormatConverter x:Key="TimeSpanConverter" Format="hh\:mm\:ss" />
 
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />

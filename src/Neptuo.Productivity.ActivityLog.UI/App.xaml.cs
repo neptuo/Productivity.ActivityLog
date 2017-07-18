@@ -43,7 +43,12 @@ namespace Neptuo.Productivity.ActivityLog
             timer.Elapsed += OnTimerElapsed;
             timer.Start();
 
-            OverviewViewModel viewModel = new OverviewViewModel(this, this);
+            OverviewViewModel viewModel = new OverviewViewModel(
+                this, 
+                this, 
+                new DateTimeProvider(), 
+                new ApplicationNameProvider()
+            );
 
             DefaultEventManager eventManager = new DefaultEventManager();
             eventManager.AddAll(viewModel);

@@ -81,11 +81,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApplicationNameProvider.cs" />
+    <Compile Include="DateTimeProvider.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
+    <Compile Include="Services\IApplicationNameProvider.cs" />
     <Compile Include="Services\IconExtractor.cs" />
+    <Compile Include="Services\IDateTimeProvider.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
+    <Compile Include="Views\Converters\FormatConverter.cs" />
     <Compile Include="Views\DesignData\Synchronizer.cs" />
     <Compile Include="Views\DesignData\Timer.cs" />
     <Compile Include="Views\DesignData\ViewModelLocator.cs" />
@@ -163,8 +168,6 @@
       <Version>1.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

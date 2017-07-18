@@ -15,6 +15,8 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
     {
         private readonly ITimer timer;
         private readonly ISynchronizer synchronizer;
+        private readonly IDateTimeProvider dateTimeProvider;
+        private readonly IApplicationNameProvider applicationNameProvider;
         private readonly ObservableCollection<ActivityOverviewViewModel> activities;
 
         public string Title { get; set; } = "Hello!";
@@ -24,13 +26,17 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             get { return activities; }
         }
 
-        public OverviewViewModel(ITimer timer, ISynchronizer synchronizer)
+        public OverviewViewModel(ITimer timer, ISynchronizer synchronizer, IDateTimeProvider dateTimeProvider, IApplicationNameProvider applicationNameProvider)
         {
             Ensure.NotNull(timer, "timer");
             Ensure.NotNull(synchronizer, "synchronizer");
+            Ensure.NotNull(dateTimeProvider, "dateTimeProvider");
+            Ensure.NotNull(applicationNameProvider, "applicationNameProvider");
             this.timer = timer;
-            this.synchronizer = synchronizer;
             this.timer.Tick += OnTimerTick;
+            this.synchronizer = synchronizer;
+            this.dateTimeProvider = dateTimeProvider;
+            this.applicationNameProvider = applicationNameProvider;
 
             activities = new ObservableCollection<ActivityOverviewViewModel>();
         }
@@ -42,7 +48,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
                 foreach (ActivityOverviewViewModel item in activities)
                 {
                     if (item.IsForeground)
-                        item.Update();
+                        item.Update(dateTimeProvider.Now());
                 }
             });
         }
@@ -65,7 +71,10 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
                 if (!hasItem)
                 {
-                    ActivityOverviewViewModel newItem = new ActivityOverviewViewModel(payload.ApplicationPath);
+                    ActivityOverviewViewModel newItem = new ActivityOverviewViewModel(
+                        applicationNameProvider.GetName(payload.ApplicationPath), 
+                        payload.ApplicationPath
+                    );
                     newItem.CurrentTitle = payload.WindowTitle;
                     newItem.StartAt(payload.StartedAt);
                     activities.Add(newItem);

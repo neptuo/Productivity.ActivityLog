@@ -4,12 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dd="clr-namespace:Neptuo.Productivity.ActivityLog.Views.DesignData"
+        xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:converters="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Converters"
         mc:Ignorable="d" d:DataContext="{x:Static dd:ViewModelLocator.Overview}"
-        Title="ActivityLog" MinWidth="220" SizeToContent="WidthAndHeight" 
+        Title="ActivityLog" MinWidth="220" SizeToContent="WidthAndHeight"
         ResizeMode="CanMinimize" WindowStyle="None" Background="{StaticResource BackgroundBrush}"
         PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown">
     <Window.Resources>
+        <CollectionViewSource x:Key="ActivitiesCollection" Source="{Binding Activities}">
+            <CollectionViewSource.SortDescriptions>
+                <cm:SortDescription PropertyName="Duration" Direction="Ascending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+
         <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource PlainButtonStyle}">
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="HorizontalAlignment" Value="Right" />
@@ -18,24 +25,37 @@
             <Setter Property="Padding" Value="4,1" />
             <Setter Property="BorderThickness" Value="0,0,0,0" />
         </Style>
+        <Style x:Key="DurationStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+            <Setter Property="Margin" Value="4,0,0,0" />
+        </Style>
     </Window.Resources>
     <Border Style="{StaticResource WindowBorderStyle}" Padding="0">
         <Grid>
-            <StackPanel>
-                <ItemsControl ItemsSource="{Binding Activities}">
+            <StackPanel Margin="8">
+                <ItemsControl ItemsSource="{Binding Source={StaticResource ActivitiesCollection}}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Padding="4" Background="{Binding IsForeground, Converter={StaticResource ActiveBorderConverter}}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding Icon}" Width="24" Margin="0,0,4,0" />
-                                    <TextBlock Text="{Binding ApplicationName}" VerticalAlignment="Center" />
-                                </StackPanel>
+                            <Border Padding="4" Background="{Binding IsForeground, Converter={StaticResource ActiveBackgroundConverter}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" MaxWidth="300" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding Icon}" Width="24" Margin="0,0,4,0" />
+                                        <TextBlock Text="{Binding ApplicationName}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Duration, Converter={StaticResource TimeSpanConverter}}" Style="{StaticResource DurationStyle}" Grid.Column="1" />
+                                </Grid>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
-            <Button x:Name="Close" Content="X" Click="Close_Click" Style="{StaticResource CloseButtonStyle}" />
+            <Button x:Name="Close" Content="X" ToolTip="Close (Esc)" Click="Close_Click" Style="{StaticResource CloseButtonStyle}" />
         </Grid>
     </Border>
 </Window>

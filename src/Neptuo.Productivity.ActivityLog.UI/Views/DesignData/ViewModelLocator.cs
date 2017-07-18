@@ -21,7 +21,12 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             {
                 if (overview == null)
                 {
-                    overview = new OverviewViewModel(new Timer(), new Synchronizer());
+                    overview = new OverviewViewModel(
+                        new Timer(), 
+                        new Synchronizer(), 
+                        new DateTimeProvider(), 
+                        new ApplicationNameProvider()
+                    );
                     EventManager.AddAll(overview);
                     GenerateEventStream();
                 }
