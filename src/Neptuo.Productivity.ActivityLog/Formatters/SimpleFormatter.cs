@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Globalization;
 
 namespace Neptuo.Productivity.ActivityLog.Formatters
 {
@@ -18,6 +19,9 @@ namespace Neptuo.Productivity.ActivityLog.Formatters
             using (StreamReader reader = new StreamReader(input, Encoding.UTF8, false, 1024, true))
             {
                 string line = reader.ReadLine();
+                if (string.IsNullOrEmpty(line))
+                    return false;
+
                 string[] parts = line.Split(';');
 
                 if (parts.Length != 5)
@@ -29,7 +33,7 @@ namespace Neptuo.Productivity.ActivityLog.Formatters
                 string windowTitle = parts[3];
                 string rawDateTime = parts[4];
 
-                if (Int32.TryParse(rawVersion, out int version) && DateTime.TryParse(rawDateTime, out DateTime dateTime))
+                if (Int32.TryParse(rawVersion, out int version) && DateTime.TryParseExact(rawDateTime, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
                 {
                     if (version == 1)
                     {

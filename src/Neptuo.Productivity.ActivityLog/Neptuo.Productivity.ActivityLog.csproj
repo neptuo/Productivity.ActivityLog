@@ -62,7 +62,6 @@
     <Compile Include="Data\FileEventStore.cs" />
     <Compile Include="Data\IEventStore.cs" />
     <Compile Include="DomainService.cs" />
-    <Compile Include="DomainService.ProcessInfo.cs" />
     <Compile Include="Formatters\SimpleFormatter.cs" />
     <Compile Include="ProcessChangedEventArgs.cs" />
     <Compile Include="ProcessChangedType.cs" />

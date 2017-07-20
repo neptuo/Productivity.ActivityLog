@@ -13,7 +13,6 @@ namespace Neptuo.Productivity.ActivityLog
     {
         private readonly IEventDispatcher eventDispatcher;
         private readonly ProcessMonitor monitor;
-        private readonly Dictionary<int, ProcessInfo> processCache = new Dictionary<int, ProcessInfo>();
 
         public DomainService(IEventDispatcher eventDispatcher)
         {
@@ -27,49 +26,23 @@ namespace Neptuo.Productivity.ActivityLog
 
         private async void OnProcessChanged(object sender, ProcessChangedEventArgs e)
         {
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.Now;    
             if (e.Type == ProcessChangedType.Process)
             {
-                if (e.OriginalProcessId != null)
-                {
-                    if (TryGetInfo(e.OriginalProcessId.Value, out ProcessInfo originalInfo))
-                        await eventDispatcher.PublishAsync(new ActivityEnded(originalInfo.Path, e.OriginalTitle, now));
-                }
+                if (e.OriginalProcessId != null && e.OriginalPath != null)
+                    await eventDispatcher.PublishAsync(new ActivityEnded(e.OriginalPath, e.OriginalTitle, now));
 
-                if (TryGetInfo(e.CurrentProcessId, out ProcessInfo currentInfo))
-                    await eventDispatcher.PublishAsync(new ActivityStarted(currentInfo.Path, e.CurrentTitle, now));
+                if (e.CurrentPath != null)
+                    await eventDispatcher.PublishAsync(new ActivityStarted(e.CurrentPath, e.CurrentTitle, now));
             }
             else if (e.Type == ProcessChangedType.Title)
             {
-                if (TryGetInfo(e.CurrentProcessId, out ProcessInfo info))
-                {
-                    await eventDispatcher.PublishAsync(new ActivityEnded(info.Path, e.OriginalTitle, now));
-                    await eventDispatcher.PublishAsync(new ActivityStarted(info.Path, e.CurrentTitle, now));
-                }
-            }
-        }
+                if (e.OriginalPath != null)
+                    await eventDispatcher.PublishAsync(new ActivityEnded(e.OriginalPath, e.OriginalTitle, now));
 
-        private bool TryGetInfo(int processId, out ProcessInfo info)
-        {
-            if (processCache.TryGetValue(processId, out info))
-                return true;
-
-            string path = null;
-            try
-            {
-                Process process = Process.GetProcessById(processId);
-                path = process.MainModule?.FileName;
+                if (e.CurrentPath != null)
+                    await eventDispatcher.PublishAsync(new ActivityStarted(e.CurrentPath, e.CurrentTitle, now));
             }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            processCache[processId] = info = new ProcessInfo
-            {
-                Path = path
-            };
-            return true;
         }
 
         protected override void DisposeManagedResources()
