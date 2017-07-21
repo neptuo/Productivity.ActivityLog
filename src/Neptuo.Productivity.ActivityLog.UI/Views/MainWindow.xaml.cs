@@ -1,6 +1,9 @@
-﻿using Neptuo.Productivity.ActivityLog.Views.Controls;
+﻿using Neptuo;
+using Neptuo.Productivity.ActivityLog.ViewModels;
+using Neptuo.Productivity.ActivityLog.Views.Controls;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
 
 namespace Neptuo.Productivity.ActivityLog.Views
 {
@@ -21,9 +25,52 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public OverviewViewModel ViewModel
         {
+            get { return (OverviewViewModel)DataContext; }
+        }
+
+        public MainWindow(OverviewViewModel viewModel)
+        {
+            Ensure.NotNull(viewModel, "viewModel");
             InitializeComponent();
+
+            DataContext = viewModel;
+            if (viewModel.Activities is INotifyCollectionChanged collection)
+            {
+                collection.CollectionChanged += OnActivitiesChanged;
+            }
+        }
+
+        private void OnActivitiesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ActivityOverviewViewModel item in e.NewItems)
+                        item.PropertyChanged += OnActivityChanged;
+
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ActivityOverviewViewModel item in e.OldItems)
+                        item.PropertyChanged -= OnActivityChanged;
+
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (ActivityOverviewViewModel item in e.NewItems)
+                        item.PropertyChanged += OnActivityChanged;
+
+                    break;
+            }
+        }
+
+        private void OnActivityChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ActivityOverviewViewModel.Duration))
+            {
+                ICollectionView view = CollectionViewSource.GetDefaultView(ViewModel.Activities);
+                view.Refresh();
+            }
         }
 
         private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)

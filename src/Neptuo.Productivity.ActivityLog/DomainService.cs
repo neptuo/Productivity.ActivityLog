@@ -14,6 +14,8 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly IEventDispatcher eventDispatcher;
         private readonly ProcessMonitor monitor;
 
+        private ProcessChangedEventArgs lastChangedEventArgs;
+
         public DomainService(IEventDispatcher eventDispatcher)
         {
             Ensure.NotNull(eventDispatcher, "eventDispatcher");
@@ -26,7 +28,7 @@ namespace Neptuo.Productivity.ActivityLog
 
         private async void OnProcessChanged(object sender, ProcessChangedEventArgs e)
         {
-            DateTime now = DateTime.Now;    
+            DateTime now = DateTime.Now;
             if (e.Type == ProcessChangedType.Process)
             {
                 if (e.OriginalProcessId != null && e.OriginalPath != null)
@@ -43,11 +45,18 @@ namespace Neptuo.Productivity.ActivityLog
                 if (e.CurrentPath != null)
                     await eventDispatcher.PublishAsync(new ActivityStarted(e.CurrentPath, e.CurrentTitle, now));
             }
+
+            lastChangedEventArgs = e;
         }
 
         protected override void DisposeManagedResources()
         {
             base.DisposeManagedResources();
+
+            //DateTime now = DateTime.Now;
+            //if (lastChangedEventArgs != null && lastChangedEventArgs.CurrentPath != null)
+            //    eventDispatcher.PublishAsync(new ActivityEnded(lastChangedEventArgs.CurrentPath, lastChangedEventArgs.CurrentTitle, now)).Wait();
+
             monitor.Dispose();
         }
     }

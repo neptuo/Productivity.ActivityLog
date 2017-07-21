@@ -27,6 +27,9 @@ namespace Neptuo.Productivity.ActivityLog
         private DispatcherHelper dispatcher;
         private Timer timer;
         private DomainService service;
+        private DefaultEventManager eventManager;
+        private RecoveryService recovery;
+        private OverviewViewModel viewModel;
 
         public event Action Tick;
 
@@ -43,14 +46,14 @@ namespace Neptuo.Productivity.ActivityLog
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            DefaultEventManager eventManager = new DefaultEventManager();
+            eventManager = new DefaultEventManager();
 
             dispatcher = new DispatcherHelper(Dispatcher);
             timer = new Timer(1000);
             timer.Elapsed += OnTimerElapsed;
             timer.Start();
 
-            OverviewViewModel viewModel = new OverviewViewModel(
+            viewModel = new OverviewViewModel(
                 this,
                 this,
                 new DateTimeProvider(),
@@ -59,13 +62,11 @@ namespace Neptuo.Productivity.ActivityLog
 
             eventManager.AddAll(viewModel);
 
-            service = new DomainService(eventManager);
-
             SimpleFormatter formatter = new SimpleFormatter();
-            MainWindow wnd = new MainWindow();
-            wnd.DataContext = viewModel;
+            MainWindow wnd = new MainWindow(viewModel);
+            wnd.Show();
 
-            string todayFile = GetFileName(DateTime.Today);
+            string todayFile = GetEventStoreFileName(DateTime.Today);
             if (File.Exists(todayFile))
             {
                 using (Stream file = File.OpenRead(todayFile))
@@ -84,13 +85,22 @@ namespace Neptuo.Productivity.ActivityLog
                 }
             }
 
-            FileEventStore store = new FileEventStore(formatter, GetFileName);
+            FileEventStore store = new FileEventStore(formatter, GetEventStoreFileName);
             eventManager.AddAll(new EventStoreHandler(store));
 
-            wnd.Show();
+            RecoverAsync(formatter).Wait();
+
+            service = new DomainService(eventManager);
         }
 
-        private static string GetFileName(DateTime dateTime)
+        private async Task RecoverAsync(IFormatter formatter)
+        {
+            recovery = new RecoveryService(formatter, () => "recovery.alog");
+            await recovery.RecoverAsync(eventManager);
+            eventManager.AddAll(recovery);
+        }
+
+        private static string GetEventStoreFileName(DateTime dateTime)
         {
             return $"{dateTime.ToString("yyyy-MM-dd")}.alog";
         }

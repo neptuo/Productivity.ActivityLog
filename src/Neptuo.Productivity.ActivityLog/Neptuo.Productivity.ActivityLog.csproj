@@ -61,6 +61,7 @@
     <Compile Include="Data\EventStoreHandler.cs" />
     <Compile Include="Data\FileEventStore.cs" />
     <Compile Include="Data\IEventStore.cs" />
+    <Compile Include="Data\RecoveryService.cs" />
     <Compile Include="DomainService.cs" />
     <Compile Include="Formatters\SimpleFormatter.cs" />
     <Compile Include="ProcessChangedEventArgs.cs" />
