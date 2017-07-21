@@ -65,21 +65,24 @@ namespace Neptuo.Productivity.ActivityLog
             MainWindow wnd = new MainWindow();
             wnd.DataContext = viewModel;
 
-            //string todayFile = GetFileName(DateTime.Today);
-            //if (File.Exists(todayFile))
-            //{
-            //    using (Stream file = File.OpenRead(todayFile))
-            //    {
-            //        IDeserializerContext context = new DefaultDeserializerContext(typeof(IEvent));
-            //        while (formatter.TryDeserialize(file, context))
-            //        {
-            //            if (context.Output is ActivityStarted started)
-            //                eventManager.PublishAsync(started).Wait();
-            //            else if (context.Output is ActivityEnded ended)
-            //                eventManager.PublishAsync(ended).Wait();
-            //        }
-            //    }
-            //}
+            string todayFile = GetFileName(DateTime.Today);
+            if (File.Exists(todayFile))
+            {
+                using (Stream file = File.OpenRead(todayFile))
+                {
+                    IDeserializerContext context = new DefaultDeserializerContext(typeof(IEnumerable<IEvent>));
+                    if (formatter.TryDeserialize(file, context))
+                    {
+                        foreach (IEvent output in (IEnumerable<IEvent>)context.Output)
+                        {
+                            if (output is ActivityStarted started)
+                                eventManager.PublishAsync(started).Wait();
+                            else if (output is ActivityEnded ended)
+                                eventManager.PublishAsync(ended).Wait();
+                        }
+                    }
+                }
+            }
 
             FileEventStore store = new FileEventStore(formatter, GetFileName);
             eventManager.AddAll(new EventStoreHandler(store));

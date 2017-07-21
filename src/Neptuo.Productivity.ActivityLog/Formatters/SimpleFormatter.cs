@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Globalization;
+using Neptuo.Events;
 
 namespace Neptuo.Productivity.ActivityLog.Formatters
 {
@@ -16,42 +17,38 @@ namespace Neptuo.Productivity.ActivityLog.Formatters
 
         public bool TryDeserialize(Stream input, IDeserializerContext context)
         {
-            using (StreamReader reader = new StreamReader(input, Encoding.UTF8, false, 1024, true))
+            using (StreamReader reader = new StreamReader(input, Encoding.UTF8, false, 128, true))
             {
-                string line = reader.ReadLine();
-                if (string.IsNullOrEmpty(line))
-                    return false;
-
-                string[] parts = line.Split(';');
-
-                if (parts.Length != 5)
-                    return false;
-
-                string rawVersion = parts[0];
-                string type = parts[1];
-                string applicationPath = parts[2];
-                string windowTitle = parts[3];
-                string rawDateTime = parts[4];
-
-                if (Int32.TryParse(rawVersion, out int version) && DateTime.TryParseExact(rawDateTime, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
+                List<IEvent> result = new List<IEvent>();
+                string line;
+                while (!string.IsNullOrEmpty((line = reader.ReadLine())))
                 {
-                    if (version == 1)
+                    string[] parts = line.Split(';');
+
+                    if (parts.Length != 5)
+                        return false;
+
+                    string rawVersion = parts[0];
+                    string type = parts[1];
+                    string applicationPath = parts[2];
+                    string windowTitle = parts[3];
+                    string rawDateTime = parts[4];
+
+                    if (Int32.TryParse(rawVersion, out int version) && DateTime.TryParseExact(rawDateTime, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
                     {
-                        if (type == nameof(ActivityStarted))
+                        if (version == 1)
                         {
-                            context.Output = new ActivityStarted(applicationPath, windowTitle, dateTime);
-                            return true;
-                        }
-                        else if (type == nameof(ActivityEnded))
-                        {
-                            context.Output = new ActivityEnded(applicationPath, windowTitle, dateTime);
-                            return true;
+                            if (type == nameof(ActivityStarted))
+                                result.Add(new ActivityStarted(applicationPath, windowTitle, dateTime));
+                            else if (type == nameof(ActivityEnded))
+                                result.Add(new ActivityEnded(applicationPath, windowTitle, dateTime));
                         }
                     }
                 }
-            }
 
-            return false;
+                context.Output = result;
+                return true;
+            }
         }
 
         public Task<bool> TryDeserializeAsync(Stream input, IDeserializerContext context)
@@ -63,14 +60,14 @@ namespace Neptuo.Productivity.ActivityLog.Formatters
         {
             if (input is ActivityStarted started)
             {
-                using (StreamWriter writer = new StreamWriter(context.Output, Encoding.UTF8, 1024, true))
+                using (StreamWriter writer = new StreamWriter(context.Output, Encoding.UTF8, 128, true))
                     writer.WriteLine($"1;{nameof(ActivityStarted)};{started.ApplicationPath};{started.WindowTitle};{started.StartedAt.ToString(DateTimeFormat)}");
 
                 return true;
             }
             else if (input is ActivityEnded ended)
             {
-                using (StreamWriter writer = new StreamWriter(context.Output, Encoding.UTF8, 1024, true))
+                using (StreamWriter writer = new StreamWriter(context.Output, Encoding.UTF8, 128, true))
                     writer.WriteLine($"1;{nameof(ActivityEnded)};{ended.ApplicationPath};{ended.WindowTitle};{ended.EndedAt.ToString(DateTimeFormat)}");
 
                 return true;
