@@ -22,7 +22,10 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly IEventHandlerCollection eventHandlers;
         private readonly IFormatter formatter;
         private readonly Func<DateTime, string> eventStoreFileNameGetter;
+
         private MainWindow mainWindow;
+        private UiThreadEventHandler<ActivityStarted> mainActivityStartedHandler;
+        private UiThreadEventHandler<ActivityEnded> mainActivityEndedHandler;
 
         public ApplicationNavigator(ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IFormatter formatter, Func<DateTime, string> eventStoreFileNameGetter)
         {
@@ -67,9 +70,8 @@ namespace Neptuo.Productivity.ActivityLog
                     }
                 }
 
-                eventHandlers
-                    .Add<ActivityStarted>(viewModel)
-                    .Add<ActivityEnded>(viewModel);
+                mainActivityStartedHandler = eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer);
+                mainActivityEndedHandler = eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer);
 
                 mainWindow = new MainWindow(viewModel);
                 mainWindow.Closed += OnMainWindowClosed;
@@ -81,19 +83,26 @@ namespace Neptuo.Productivity.ActivityLog
 
         private void OnMainWindowClosed(object sender, EventArgs e)
         {
-            mainWindow.Closed -= OnMainWindowClosed;
-            mainWindow = null;
+            TryDisposeMainWindow();
         }
 
         protected override void DisposeManagedResources()
         {
             base.DisposeManagedResources();
 
+            TryDisposeMainWindow();
+        }
+
+        private void TryDisposeMainWindow()
+        {
             if (mainWindow?.ViewModel != null)
             {
                 eventHandlers
-                    .Remove<ActivityStarted>(mainWindow.ViewModel)
-                    .Remove<ActivityEnded>(mainWindow.ViewModel);
+                    .Remove(mainActivityStartedHandler)
+                    .Remove(mainActivityEndedHandler);
+
+                mainWindow.Closed -= OnMainWindowClosed;
+                mainWindow = null;
             }
         }
     }

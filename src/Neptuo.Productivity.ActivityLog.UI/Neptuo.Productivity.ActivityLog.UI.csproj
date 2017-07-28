@@ -92,6 +92,7 @@
     <Compile Include="Services\INavigator.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
+    <Compile Include="UiThreadEventHandler.cs" />
     <Compile Include="UiThreadTimer.cs" />
     <Compile Include="Views\Controls\SettingsExtension.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
