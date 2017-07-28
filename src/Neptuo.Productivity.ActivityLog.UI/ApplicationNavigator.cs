@@ -4,6 +4,7 @@ using Neptuo.Events.Handlers;
 using Neptuo.Formatters;
 using Neptuo.Productivity.ActivityLog.Events;
 using Neptuo.Productivity.ActivityLog.Services;
+using Neptuo.Productivity.ActivityLog.Services.Models;
 using Neptuo.Productivity.ActivityLog.ViewModels;
 using Neptuo.Productivity.ActivityLog.Views;
 using System;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Neptuo.Productivity.ActivityLog
 {
@@ -96,10 +98,11 @@ namespace Neptuo.Productivity.ActivityLog
         {
             if (configuration == null)
             {
-                //ConfigurationViewModel viewModel = new ConfigurationViewModel();
-                ConfigurationViewModel viewModel = Views.DesignData.ViewModelLocator.Configuration;
+                ConfigurationViewModel viewModel = new ConfigurationViewModel(this);
+                //ConfigurationViewModel viewModel = Views.DesignData.ViewModelLocator.Configuration;
                 configuration = new Configuration(viewModel);
                 configuration.Closed += OnConfigurationClosed;
+                configuration.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
 
             configuration.Show();
@@ -109,6 +112,67 @@ namespace Neptuo.Productivity.ActivityLog
         private void OnConfigurationClosed(object sender, EventArgs e)
         {
             TryDisposeConfiguration();
+        }
+
+        private TaskCompletionSource<ICategory> categoryEditCompletionSource;
+        private CategoryEdit categoryEdit;
+
+        private Task<ICategory> NewOrEditCategory(ICategory category)
+        {
+            if (categoryEditCompletionSource == null)
+            {
+                categoryEditCompletionSource = new TaskCompletionSource<ICategory>();
+
+                CategoryEditViewModel viewModel = new CategoryEditViewModel(OnCategoryEditSaved);
+                if (category == null)
+                {
+                    viewModel.Color = Colors.Red;
+                }
+                else
+                {
+                    viewModel.Color = category.Color;
+                    viewModel.Name = category.Name;
+                }
+
+                categoryEdit = new CategoryEdit(viewModel);
+                categoryEdit.Closed += OnCategoryEditClosed;
+
+                if (configuration != null)
+                {
+                    categoryEdit.Owner = configuration;
+                    categoryEdit.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                }
+            }
+
+            categoryEdit.Show();
+            categoryEdit.Activate();
+            return categoryEditCompletionSource.Task;
+        }
+
+        public Task<ICategory> NewCategory()
+        {
+            return NewOrEditCategory(null);
+        }
+
+        public Task<ICategory> EditCategory(ICategory category)
+        {
+            Ensure.NotNull(category, "category");
+            return NewOrEditCategory(category);
+        }
+
+        private void OnCategoryEditSaved()
+        {
+            if (categoryEditCompletionSource != null && categoryEdit != null)
+            {
+                categoryEditCompletionSource.SetResult(categoryEdit.ViewModel);
+                categoryEditCompletionSource = null;
+                categoryEdit.Close();
+            }
+        }
+
+        private void OnCategoryEditClosed(object sender, EventArgs e)
+        {
+            TryDisposeCategoryEdit();
         }
 
         public void Message(string message)
@@ -163,6 +227,21 @@ namespace Neptuo.Productivity.ActivityLog
             {
                 configuration.Closed -= OnConfigurationClosed;
                 configuration = null;
+            }
+        }
+
+        private void TryDisposeCategoryEdit()
+        {
+            if (categoryEditCompletionSource != null)
+            {
+                categoryEditCompletionSource.SetResult(null);
+                categoryEditCompletionSource = null;
+            }
+
+            if (categoryEdit?.ViewModel != null)
+            {
+                categoryEdit.Closed -= OnCategoryEditClosed;
+                categoryEdit = null;
             }
         }
     }

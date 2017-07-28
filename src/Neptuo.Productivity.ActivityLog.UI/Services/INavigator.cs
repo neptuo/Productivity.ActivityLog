@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Neptuo.Productivity.ActivityLog.Services.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,9 @@ namespace Neptuo.Productivity.ActivityLog.Services
 
         void TodayOverview();
         void Configuration();
+
+        Task<ICategory> EditCategory(ICategory category);
+        Task<ICategory> NewCategory();
 
         void Exist();
     }

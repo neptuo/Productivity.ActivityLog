@@ -1,40 +1,54 @@
-﻿using Neptuo.Observables;
+﻿using Neptuo;
+using Neptuo.Observables;
+using Neptuo.Observables.Commands;
+using Neptuo.Productivity.ActivityLog.Services.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
+using System.Windows.Input;
 
 namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
-    public class CategoryEditViewModel : ObservableObject
+    public class CategoryEditViewModel : CategoryViewModel
     {
-        private string name;
-        public string Name
+        public ICommand Save { get; private set; }
+
+        public CategoryEditViewModel(Action onSave)
         {
-            get { return name; }
-            set
-            {
-                if (name != value)
-                {
-                    name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            Ensure.NotNull(onSave, "onSave");
+            Save = new SaveCommand(this, onSave);
         }
 
-        private Color color;
-        public Color Color
+        private class SaveCommand : Command
         {
-            get { return color; }
-            set
+            private readonly CategoryEditViewModel viewModel;
+            private readonly Action onSave;
+
+            public SaveCommand(CategoryEditViewModel viewModel, Action onSave)
             {
-                if (color != value)
-                {
-                    color = value;
-                    RaisePropertyChanged();
-                }
+                this.viewModel = viewModel;
+                this.onSave = onSave;
+
+                viewModel.PropertyChanged += OnPropertyChanged;
+            }
+
+            private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == nameof(Name))
+                    RaiseCanExecuteChanged();
+            }
+
+            public override bool CanExecute()
+            {
+                return !string.IsNullOrEmpty(viewModel.Name);
+            }
+
+            public override void Execute()
+            {
+                onSave();
             }
         }
     }

@@ -95,11 +95,16 @@
     <Compile Include="Services\INavigator.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
+    <Compile Include="Services\Models\ICategory.cs" />
     <Compile Include="UiThreadEventHandler.cs" />
     <Compile Include="UiThreadTimer.cs" />
     <Compile Include="ViewModels\CategoryEditViewModel.cs" />
+    <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\CategoryListViewModel.cs" />
     <Compile Include="ViewModels\ConfigurationViewModel.cs" />
+    <Compile Include="Views\CategoryEdit.xaml.cs">
+      <DependentUpon>CategoryEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Configuration.xaml.cs">
       <DependentUpon>Configuration.xaml</DependentUpon>
     </Compile>
@@ -107,6 +112,7 @@
     <Compile Include="Views\Controls\SettingsExtension.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
     <Compile Include="Views\Converters\FormatConverter.cs" />
+    <Compile Include="Views\DesignData\Navigator.cs" />
     <Compile Include="Views\DesignData\Synchronizer.cs" />
     <Compile Include="Views\DesignData\Timer.cs" />
     <Compile Include="Views\DesignData\ViewModelLocator.cs" />
@@ -115,6 +121,10 @@
     <Compile Include="Views\Converters\BoolConverter.cs" />
     <Compile Include="Views\Converters\CuttingConverter.cs" />
     <Compile Include="Views\Converters\NullConverter.cs" />
+    <Page Include="Views\CategoryEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Configuration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
