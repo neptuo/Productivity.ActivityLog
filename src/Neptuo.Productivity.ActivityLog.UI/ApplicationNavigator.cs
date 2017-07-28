@@ -25,7 +25,7 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly IFormatter formatter;
         private readonly Func<DateTime, string> eventStoreFileNameGetter;
 
-        private MainWindow mainWindow;
+        private TodayOverview mainWindow;
         private UiThreadEventHandler<ActivityStarted> mainActivityStartedHandler;
         private UiThreadEventHandler<ActivityEnded> mainActivityEndedHandler;
 
@@ -77,7 +77,7 @@ namespace Neptuo.Productivity.ActivityLog
                 mainActivityStartedHandler = eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer);
                 mainActivityEndedHandler = eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer);
 
-                mainWindow = new MainWindow(viewModel);
+                mainWindow = new TodayOverview(viewModel);
                 mainWindow.Closed += OnMainWindowClosed;
             }
 

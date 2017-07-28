@@ -24,7 +24,7 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class TodayOverview : Window
     {
         private readonly DispatcherHelper dispatcher;
 
@@ -33,7 +33,7 @@ namespace Neptuo.Productivity.ActivityLog.Views
             get { return (OverviewViewModel)DataContext; }
         }
 
-        public MainWindow(OverviewViewModel viewModel)
+        public TodayOverview(OverviewViewModel viewModel)
         {
             Ensure.NotNull(viewModel, "viewModel");
             InitializeComponent();

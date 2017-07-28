@@ -153,6 +153,5 @@ namespace Neptuo.Productivity.ActivityLog
         }
 
         #endregion
-
     }
 }

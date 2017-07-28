@@ -108,7 +108,7 @@
     <Compile Include="Views\Converters\BoolConverter.cs" />
     <Compile Include="Views\Converters\CuttingConverter.cs" />
     <Compile Include="Views\Converters\NullConverter.cs" />
-    <Page Include="Views\MainWindow.xaml">
+    <Page Include="Views\TodayOverview.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -116,8 +116,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Views\TodayOverview.xaml.cs">
+      <DependentUpon>TodayOverview.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\Themes\Dark.xaml">
