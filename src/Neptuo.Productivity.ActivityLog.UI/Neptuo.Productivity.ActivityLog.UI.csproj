@@ -96,12 +96,14 @@
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
     <Compile Include="Services\Models\ICategory.cs" />
+    <Compile Include="Services\Models\IRule.cs" />
     <Compile Include="UiThreadEventHandler.cs" />
     <Compile Include="UiThreadTimer.cs" />
     <Compile Include="ViewModels\CategoryEditViewModel.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\CategoryListViewModel.cs" />
     <Compile Include="ViewModels\ConfigurationViewModel.cs" />
+    <Compile Include="ViewModels\RuleViewModel.cs" />
     <Compile Include="Views\CategoryEdit.xaml.cs">
       <DependentUpon>CategoryEdit.xaml</DependentUpon>
     </Compile>

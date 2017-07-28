@@ -40,12 +40,12 @@
                                         </Rectangle.Fill>
                                     </Rectangle>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button ToolTip="Edit additional application" Style="{StaticResource ListViewItemButtonStyle}"
+                                        <Button ToolTip="Edit category application" Style="{StaticResource ListViewItemButtonStyle}"
                                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.Edit}"
                                          CommandParameter="{Binding}">
                                             <fa:ImageAwesome Icon="Edit" Style="{StaticResource ImageAwesome}" />
                                         </Button>
-                                        <Button ToolTip="Remove additional application" Style="{StaticResource ListViewItemButtonStyle}"
+                                        <Button ToolTip="Remove category application" Style="{StaticResource ListViewItemButtonStyle}"
                                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.Remove}"
                                          CommandParameter="{Binding}">
                                             <fa:ImageAwesome Icon="Remove" Style="{StaticResource ImageAwesome}" Width="14" />

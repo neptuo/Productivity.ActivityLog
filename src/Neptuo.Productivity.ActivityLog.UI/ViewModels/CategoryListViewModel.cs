@@ -41,6 +41,12 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             {
                 source.Color = target.Color;
                 source.Name = target.Name;
+                source.Rules.Clear();
+                source.Rules.AddRange(target.Rules.Select(c => new RuleViewModel()
+                {
+                    WindowTitle = c.WindowTitle,
+                    ApplicationPath = c.ApplicationPath
+                }));
             }
         }
 
@@ -49,11 +55,17 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             ICategory category = await navigator.NewCategory();
             if (category != null)
             {
-                Items.Add(new CategoryViewModel()
+                CategoryViewModel item = new CategoryViewModel()
                 {
                     Color = category.Color,
                     Name = category.Name
-                });
+                };
+                item.Rules.AddRange(category.Rules.Select(c => new RuleViewModel()
+                {
+                    WindowTitle = c.WindowTitle,
+                    ApplicationPath = c.ApplicationPath
+                }));
+                Items.Add(item);
             }
         }
     }

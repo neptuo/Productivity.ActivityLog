@@ -24,7 +24,7 @@
             </StackPanel>
         </Grid>
 
-        <StackPanel>
+        <StackPanel Orientation="Vertical">
             <DockPanel>
                 <Rectangle x:Name="Color" MouseUp="Color_MouseUp" Width="48" Height="48" Margin="5,0,15,0" DockPanel.Dock="Left">
                     <Rectangle.Fill>
@@ -39,7 +39,38 @@
                     <TextBox x:Name="Name" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0" />
                 </StackPanel>
             </DockPanel>
-            
+
+            <ui:ListView ItemsSource="{Binding Rules}" Label="Rules" LabelDetail="Rules for categorizing applications" CreateCommand="{Binding CreateRule}">
+                <ui:ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource ListViewItemBorderStyle}" Background="Transparent" Margin="0,0,0,10" Padding="4,4,4,10" BorderThickness="0,1,0,0">
+                            <StackPanel>
+                                <Button ToolTip="Remove rule application" Style="{StaticResource ListViewItemButtonStyle}"
+                                 Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.RemoveRule}"
+                                 CommandParameter="{Binding}">
+                                    <fa:ImageAwesome Icon="Remove" Style="{StaticResource ImageAwesome}" Width="14" />
+                                </Button>
+
+                                <StackPanel Style="{StaticResource EditorPanelStyle}">
+                                    <Grid>
+                                        <Label Content="ApplicationPath:" />
+                                        <TextBlock Text="An application path mask" HorizontalAlignment="Right" />
+                                    </Grid>
+                                    <TextBox Text="{Binding ApplicationPath, UpdateSourceTrigger=PropertyChanged}" Margin="0" />
+                                </StackPanel>
+
+                                <StackPanel Style="{StaticResource EditorPanelStyle}">
+                                    <Grid>
+                                        <Label Content="WindowTitle:" />
+                                        <TextBlock Text="A window title mask" HorizontalAlignment="Right" />
+                                    </Grid>
+                                    <TextBox Text="{Binding WindowTitle, UpdateSourceTrigger=PropertyChanged}" Margin="0" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ui:ListView.ItemTemplate>
+            </ui:ListView>
         </StackPanel>
     </DockPanel>
 </Window>

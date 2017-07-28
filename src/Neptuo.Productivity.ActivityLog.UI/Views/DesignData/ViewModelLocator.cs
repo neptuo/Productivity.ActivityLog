@@ -68,6 +68,21 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                         Color = Colors.Red,
                         Name = "Work"
                     };
+                    categoryEdit.Rules.Add(new RuleViewModel()
+                    {
+                        ApplicationPath = @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe",
+                        WindowTitle = "*"
+                    });
+                    categoryEdit.Rules.Add(new RuleViewModel()
+                    {
+                        ApplicationPath = @"C:\Program Files (x86)\GitExtensions\GitExtensions.exe",
+                        WindowTitle = "*Neptuo*"
+                    });
+                    categoryEdit.Rules.Add(new RuleViewModel()
+                    {
+                        ApplicationPath = @"C:\Windows\Notepad.exe",
+                        WindowTitle = "*"
+                    });
                 }
 
                 return categoryEdit;

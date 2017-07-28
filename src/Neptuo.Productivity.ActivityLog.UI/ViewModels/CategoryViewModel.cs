@@ -1,4 +1,5 @@
 ﻿using Neptuo.Observables;
+using Neptuo.Observables.Collections;
 using Neptuo.Productivity.ActivityLog.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,15 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
                     RaisePropertyChanged();
                 }
             }
+        }
+
+        public ObservableCollection<RuleViewModel> Rules { get; private set; }
+
+        IReadOnlyList<IRule> ICategory.Rules => Rules;
+
+        public CategoryViewModel()
+        {
+            Rules = new ObservableCollection<RuleViewModel>();
         }
     }
 }

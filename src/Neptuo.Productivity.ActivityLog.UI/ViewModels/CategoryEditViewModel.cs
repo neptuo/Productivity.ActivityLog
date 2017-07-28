@@ -14,11 +14,15 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
     public class CategoryEditViewModel : CategoryViewModel
     {
+        public ICommand CreateRule { get; private set; }
+        public ICommand RemoveRule { get; private set; }
         public ICommand Save { get; private set; }
 
         public CategoryEditViewModel(Action onSave)
         {
             Ensure.NotNull(onSave, "onSave");
+            CreateRule = new DelegateCommand(() => Rules.Add(new RuleViewModel()));
+            RemoveRule = new DelegateCommand<RuleViewModel>(vm => Rules.Remove(vm));
             Save = new SaveCommand(this, onSave);
         }
 
