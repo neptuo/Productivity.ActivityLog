@@ -39,6 +39,9 @@ namespace Neptuo.Productivity.ActivityLog.Views
             if (viewModel.Activities is INotifyCollectionChanged collection)
             {
                 collection.CollectionChanged += OnActivitiesChanged;
+
+                foreach (ActivityOverviewViewModel item in viewModel.Activities)
+                    item.PropertyChanged += OnActivityChanged;
             }
         }
 
@@ -68,8 +71,8 @@ namespace Neptuo.Productivity.ActivityLog.Views
         {
             if (e.PropertyName == nameof(ActivityOverviewViewModel.Duration))
             {
-                ICollectionView view = CollectionViewSource.GetDefaultView(ViewModel.Activities);
-                view.Refresh();
+                CollectionViewSource source = (CollectionViewSource)FindResource("ActivitiesCollection");
+                source.View.Refresh();
             }
         }
 

@@ -13,7 +13,7 @@
     <Window.Resources>
         <CollectionViewSource x:Key="ActivitiesCollection" Source="{Binding Activities}">
             <CollectionViewSource.SortDescriptions>
-                <cm:SortDescription PropertyName="Duration" Direction="Ascending" />
+                <cm:SortDescription PropertyName="DurationRaw" Direction="Descending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
 

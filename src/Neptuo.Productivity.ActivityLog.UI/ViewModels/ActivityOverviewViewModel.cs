@@ -61,8 +61,14 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
                 {
                     duration = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(DurationRaw));
                 }
             }
+        }
+
+        public double DurationRaw
+        {
+            get { return Duration.TotalMilliseconds; }
         }
 
         public ActivityOverviewViewModel(string applicationName, string applicationPath)
