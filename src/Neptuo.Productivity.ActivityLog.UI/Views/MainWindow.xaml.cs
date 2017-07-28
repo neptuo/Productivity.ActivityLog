@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using Neptuo.Windows.Threading;
 
 namespace Neptuo.Productivity.ActivityLog.Views
 {
@@ -25,6 +26,8 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly DispatcherHelper dispatcher;
+
         public OverviewViewModel ViewModel
         {
             get { return (OverviewViewModel)DataContext; }
@@ -34,6 +37,8 @@ namespace Neptuo.Productivity.ActivityLog.Views
         {
             Ensure.NotNull(viewModel, "viewModel");
             InitializeComponent();
+
+            dispatcher = new DispatcherHelper(Dispatcher);
 
             DataContext = viewModel;
             if (viewModel.Activities is INotifyCollectionChanged collection)
@@ -69,11 +74,14 @@ namespace Neptuo.Productivity.ActivityLog.Views
 
         private void OnActivityChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ActivityOverviewViewModel.Duration))
+            dispatcher.Run(() =>
             {
-                CollectionViewSource source = (CollectionViewSource)FindResource("ActivitiesCollection");
-                source.View.Refresh();
-            }
+                if (e.PropertyName == nameof(ActivityOverviewViewModel.Duration))
+                {
+                    CollectionViewSource source = (CollectionViewSource)FindResource("ActivitiesCollection");
+                    source.View.Refresh();
+                }
+            });
         }
 
         private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)

@@ -38,13 +38,12 @@ namespace Neptuo.Productivity.ActivityLog
             this.eventStoreFileNameGetter = eventStoreFileNameGetter;
         }
 
-        public async void OpenOverview()
+        public void OpenOverview()
         {
             if (mainWindow == null)
             {
                 OverviewViewModel viewModel = new OverviewViewModel(
                     timer,
-                    synchronizer,
                     new DateTimeProvider(),
                     new ApplicationNameProvider()
                 );
@@ -60,9 +59,9 @@ namespace Neptuo.Productivity.ActivityLog
                             foreach (IEvent output in (IEnumerable<IEvent>)context.Output)
                             {
                                 if (output is ActivityStarted started)
-                                    await ((IEventHandler<ActivityStarted>)viewModel).HandleAsync(started);
+                                    ((IEventHandler<ActivityStarted>)viewModel).HandleAsync(started).Wait();
                                 else if (output is ActivityEnded ended)
-                                    await ((IEventHandler<ActivityEnded>)viewModel).HandleAsync(ended);
+                                    ((IEventHandler<ActivityEnded>)viewModel).HandleAsync(ended).Wait();
                             }
                         }
                     }

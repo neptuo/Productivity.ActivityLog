@@ -34,7 +34,7 @@ namespace Neptuo.Productivity.ActivityLog
         private DomainService service;
         private DefaultEventManager eventManager;
         private RecoveryService recovery;
-        private Timer timer;
+        private UiThreadTimer timer;
         private SimpleFormatter formatter;
         private ApplicationNavigator navigator;
         private NotifyIcon trayIcon;
@@ -50,11 +50,11 @@ namespace Neptuo.Productivity.ActivityLog
         {
             BootTrayIcon();
 
-            timer = new Timer();
+            dispatcher = new DispatcherHelper(Dispatcher);
+            timer = new UiThreadTimer(this);
 
             eventManager = new DefaultEventManager();
 
-            dispatcher = new DispatcherHelper(Dispatcher);
             formatter = new SimpleFormatter();
             navigator = new ApplicationNavigator(timer, this, eventManager, formatter, GetEventStoreFileName);
 

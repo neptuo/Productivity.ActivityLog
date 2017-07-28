@@ -23,7 +23,6 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                 {
                     overview = new OverviewViewModel(
                         new Timer(), 
-                        new Synchronizer(), 
                         new DateTimeProvider(), 
                         new ApplicationNameProvider()
                     );

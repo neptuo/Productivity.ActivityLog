@@ -14,7 +14,6 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
     public class OverviewViewModel : IEventHandler<ActivityStarted>, IEventHandler<ActivityEnded>
     {
         private readonly ITimer timer;
-        private readonly ISynchronizer synchronizer;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly IApplicationNameProvider applicationNameProvider;
         private readonly ObservableCollection<ActivityOverviewViewModel> activities;
@@ -26,15 +25,13 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             get { return activities; }
         }
 
-        public OverviewViewModel(ITimer timer, ISynchronizer synchronizer, IDateTimeProvider dateTimeProvider, IApplicationNameProvider applicationNameProvider)
+        public OverviewViewModel(ITimer timer, IDateTimeProvider dateTimeProvider, IApplicationNameProvider applicationNameProvider)
         {
             Ensure.NotNull(timer, "timer");
-            Ensure.NotNull(synchronizer, "synchronizer");
             Ensure.NotNull(dateTimeProvider, "dateTimeProvider");
             Ensure.NotNull(applicationNameProvider, "applicationNameProvider");
             this.timer = timer;
             this.timer.Tick += OnTimerTick;
-            this.synchronizer = synchronizer;
             this.dateTimeProvider = dateTimeProvider;
             this.applicationNameProvider = applicationNameProvider;
 
@@ -43,57 +40,48 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
         private void OnTimerTick()
         {
-            synchronizer.Run(() =>
+            foreach (ActivityOverviewViewModel item in activities)
             {
-                foreach (ActivityOverviewViewModel item in activities)
-                {
-                    if (item.IsForeground)
-                        item.Update(dateTimeProvider.Now());
-                }
-            });
+                if (item.IsForeground)
+                    item.Update(dateTimeProvider.Now());
+            }
         }
 
         Task IEventHandler<ActivityStarted>.HandleAsync(ActivityStarted payload)
         {
-            synchronizer.Run(() =>
+            bool hasItem = false;
+
+            foreach (ActivityOverviewViewModel item in activities)
             {
-                bool hasItem = false;
-
-                foreach (ActivityOverviewViewModel item in activities)
+                if (payload.ApplicationPath == item.ApplicationPath)
                 {
-                    if (payload.ApplicationPath == item.ApplicationPath)
-                    {
-                        item.CurrentTitle = payload.WindowTitle;
-                        item.StartAt(payload.StartedAt);
-                        hasItem = true;
-                    }
+                    item.CurrentTitle = payload.WindowTitle;
+                    item.StartAt(payload.StartedAt);
+                    hasItem = true;
                 }
+            }
 
-                if (!hasItem)
-                {
-                    ActivityOverviewViewModel newItem = new ActivityOverviewViewModel(
-                        applicationNameProvider.GetName(payload.ApplicationPath), 
-                        payload.ApplicationPath
-                    );
-                    newItem.CurrentTitle = payload.WindowTitle;
-                    newItem.StartAt(payload.StartedAt);
-                    activities.Add(newItem);
-                }
-            });
+            if (!hasItem)
+            {
+                ActivityOverviewViewModel newItem = new ActivityOverviewViewModel(
+                    applicationNameProvider.GetName(payload.ApplicationPath),
+                    payload.ApplicationPath
+                );
+                newItem.CurrentTitle = payload.WindowTitle;
+                newItem.StartAt(payload.StartedAt);
+                activities.Add(newItem);
+            }
 
             return Task.CompletedTask;
         }
 
         Task IEventHandler<ActivityEnded>.HandleAsync(ActivityEnded payload)
         {
-            synchronizer.Run(() =>
+            foreach (ActivityOverviewViewModel item in activities)
             {
-                foreach (ActivityOverviewViewModel item in activities)
-                {
-                    if (payload.ApplicationPath == item.ApplicationPath)
-                        item.StopAt(payload.EndedAt);
-                }
-            });
+                if (payload.ApplicationPath == item.ApplicationPath)
+                    item.StopAt(payload.EndedAt);
+            }
 
             return Task.CompletedTask;
         }
