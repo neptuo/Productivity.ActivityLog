@@ -83,6 +83,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ApplicationNameProvider.cs" />
+    <Compile Include="ApplicationNavigator.cs" />
     <Compile Include="DateTimeProvider.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="Services\IApplicationNameProvider.cs" />

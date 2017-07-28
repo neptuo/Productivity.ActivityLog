@@ -34,8 +34,10 @@ namespace Neptuo.Productivity.ActivityLog
         private DomainService service;
         private DefaultEventManager eventManager;
         private RecoveryService recovery;
-        private OverviewViewModel viewModel;
         private Timer timer;
+        private SimpleFormatter formatter;
+        private ApplicationNavigator navigator;
+        private NotifyIcon trayIcon;
 
         public event Action Tick;
 
@@ -53,15 +55,18 @@ namespace Neptuo.Productivity.ActivityLog
             eventManager = new DefaultEventManager();
 
             dispatcher = new DispatcherHelper(Dispatcher);
+            formatter = new SimpleFormatter();
+            navigator = new ApplicationNavigator(timer, this, eventManager, formatter, GetEventStoreFileName);
 
-            eventManager.AddAll(viewModel);
-
-            StartAsync(viewModel);
+            BootstrapAsync();
         }
 
         private void BootTrayIcon()
         {
-            NotifyIcon trayIcon = new NotifyIcon();
+            if (trayIcon != null)
+                return;
+
+            trayIcon = new NotifyIcon();
             trayIcon.Icon = Icon.ExtractAssociatedIcon(Process.GetCurrentProcess().MainModule.FileName);
             trayIcon.Text = "ActivityLog";
             trayIcon.MouseClick += OnTrayIconClick;
@@ -74,49 +79,18 @@ namespace Neptuo.Productivity.ActivityLog
 
         private void OnTrayIconClick(object sender, MouseEventArgs e)
         {
+            if (e == null || e.Button == MouseButtons.Left)
+                navigator.OpenOverview();
         }
 
-        private async Task StartAsync(OverviewViewModel viewModel)
+        private async Task BootstrapAsync()
         {
-            viewModel = new OverviewViewModel(
-                timer,
-                this,
-                new DateTimeProvider(),
-                new ApplicationNameProvider()
-            );
-
-            SimpleFormatter formatter = new SimpleFormatter();
-
-            string todayFile = GetEventStoreFileName(DateTime.Today);
-            if (File.Exists(todayFile))
-            {
-                using (Stream file = File.OpenRead(todayFile))
-                {
-                    IDeserializerContext context = new DefaultDeserializerContext(typeof(IEnumerable<IEvent>));
-                    if (formatter.TryDeserialize(file, context))
-                    {
-                        foreach (IEvent output in (IEnumerable<IEvent>)context.Output)
-                        {
-                            if (output is ActivityStarted started)
-                                await eventManager.PublishAsync(started);
-                            else if (output is ActivityEnded ended)
-                                await eventManager.PublishAsync(ended);
-                        }
-                    }
-                }
-            }
-
             FileEventStore store = new FileEventStore(formatter, GetEventStoreFileName);
             eventManager.AddAll(new EventStoreHandler(store));
 
             await RecoverAsync(formatter);
 
             service = new DomainService(eventManager);
-
-            await Task.Delay(3000);
-
-            MainWindow wnd = new MainWindow(viewModel);
-            wnd.Show();
         }
 
         private async Task RecoverAsync(IFormatter formatter)
@@ -133,10 +107,16 @@ namespace Neptuo.Productivity.ActivityLog
 
         protected override void OnExit(ExitEventArgs e)
         {
-            base.OnExit(e);
-
             timer.Dispose();
             service.Dispose();
+
+            if (trayIcon != null)
+            {
+                trayIcon.Dispose();
+                trayIcon = null;
+            }
+
+            base.OnExit(e);
         }
     }
 }
