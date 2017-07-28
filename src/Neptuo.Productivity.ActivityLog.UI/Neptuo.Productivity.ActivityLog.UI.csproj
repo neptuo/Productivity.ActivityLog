@@ -63,6 +63,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -87,8 +88,10 @@
     <Compile Include="Services\IApplicationNameProvider.cs" />
     <Compile Include="Services\IconExtractor.cs" />
     <Compile Include="Services\IDateTimeProvider.cs" />
+    <Compile Include="Services\INavigator.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
+    <Compile Include="Timer.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
     <Compile Include="Views\Converters\FormatConverter.cs" />
     <Compile Include="Views\DesignData\Synchronizer.cs" />

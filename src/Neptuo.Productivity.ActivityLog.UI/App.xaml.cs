@@ -13,26 +13,29 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using NotifyIcon = System.Windows.Forms.NotifyIcon;
+using Application = System.Windows.Application;
 
 namespace Neptuo.Productivity.ActivityLog
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application, ITimer, ISynchronizer
+    public partial class App : Application, ISynchronizer
     {
         private DispatcherHelper dispatcher;
-        private Timer timer;
         private DomainService service;
         private DefaultEventManager eventManager;
         private RecoveryService recovery;
         private OverviewViewModel viewModel;
+        private Timer timer;
 
         public event Action Tick;
 
@@ -41,35 +44,47 @@ namespace Neptuo.Productivity.ActivityLog
             dispatcher.Run(handler);
         }
 
-        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            if (Tick != null)
-                Tick();
-        }
-
         protected override void OnStartup(StartupEventArgs e)
         {
+            BootTrayIcon();
+
+            timer = new Timer();
+
             eventManager = new DefaultEventManager();
 
             dispatcher = new DispatcherHelper(Dispatcher);
-            timer = new Timer(1000);
-            timer.Elapsed += OnTimerElapsed;
-            timer.Start();
-
-            viewModel = new OverviewViewModel(
-                this,
-                this,
-                new DateTimeProvider(),
-                new ApplicationNameProvider()
-            );
 
             eventManager.AddAll(viewModel);
 
             StartAsync(viewModel);
         }
 
+        private void BootTrayIcon()
+        {
+            NotifyIcon trayIcon = new NotifyIcon();
+            trayIcon.Icon = Icon.ExtractAssociatedIcon(Process.GetCurrentProcess().MainModule.FileName);
+            trayIcon.Text = "ActivityLog";
+            trayIcon.MouseClick += OnTrayIconClick;
+            trayIcon.Visible = true;
+
+            trayIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
+            trayIcon.ContextMenu.MenuItems.Add("Overview", (sender, e) => { OnTrayIconClick(sender, null); });
+            trayIcon.ContextMenu.MenuItems.Add("Exit", (sender, e) => Shutdown());
+        }
+
+        private void OnTrayIconClick(object sender, MouseEventArgs e)
+        {
+        }
+
         private async Task StartAsync(OverviewViewModel viewModel)
         {
+            viewModel = new OverviewViewModel(
+                timer,
+                this,
+                new DateTimeProvider(),
+                new ApplicationNameProvider()
+            );
+
             SimpleFormatter formatter = new SimpleFormatter();
 
             string todayFile = GetEventStoreFileName(DateTime.Today);
