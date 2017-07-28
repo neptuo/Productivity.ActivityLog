@@ -10,7 +10,11 @@ namespace Neptuo.Productivity.ActivityLog.Services
     {
         void Message(string message);
         void Message(string title, string message);
+        bool Confirm(string message);
+        bool Confirm(string title, string message);
 
         void Overview();
+
+        void Exist();
     }
 }

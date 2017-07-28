@@ -18,6 +18,7 @@ namespace Neptuo.Productivity.ActivityLog
 {
     internal class ApplicationNavigator : DisposableBase, INavigator
     {
+        private readonly App application;
         private readonly ITimer timer;
         private readonly ISynchronizer synchronizer;
         private readonly IEventHandlerCollection eventHandlers;
@@ -28,13 +29,15 @@ namespace Neptuo.Productivity.ActivityLog
         private UiThreadEventHandler<ActivityStarted> mainActivityStartedHandler;
         private UiThreadEventHandler<ActivityEnded> mainActivityEndedHandler;
 
-        public ApplicationNavigator(ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IFormatter formatter, Func<DateTime, string> eventStoreFileNameGetter)
+        public ApplicationNavigator(App application, ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IFormatter formatter, Func<DateTime, string> eventStoreFileNameGetter)
         {
+            Ensure.NotNull(application, "application");
             Ensure.NotNull(timer, "timer");
             Ensure.NotNull(synchronizer, "synchronizer");
             Ensure.NotNull(eventHandlers, "eventHandlers");
             Ensure.NotNull(formatter, "formatter");
             Ensure.NotNull(eventStoreFileNameGetter, "eventStoreFileNameGetter");
+            this.application = application;
             this.timer = timer;
             this.synchronizer = synchronizer;
             this.eventHandlers = eventHandlers;
@@ -114,7 +117,22 @@ namespace Neptuo.Productivity.ActivityLog
 
         public void Message(string title, string message)
         {
-            MessageBox.Show(message, title);
+            MessageBox.Show(message, "ActivityLog :: " + title);
+        }
+
+        public bool Confirm(string message)
+        {
+            return MessageBox.Show(message, "ActivityLog", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+        }
+
+        public bool Confirm(string title, string message)
+        {
+            return MessageBox.Show(message, "ActivityLog :: " + title, MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+        }
+
+        public void Exist()
+        {
+            application.Shutdown();
         }
     }
 }
