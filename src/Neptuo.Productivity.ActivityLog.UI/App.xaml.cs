@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using Application = System.Windows.Application;
 using NotifyIcon = System.Windows.Forms.NotifyIcon;
 using ContextMenu = System.Windows.Forms.ContextMenu;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Neptuo.Productivity.ActivityLog
 {
@@ -76,13 +77,14 @@ namespace Neptuo.Productivity.ActivityLog
 
             trayIcon.ContextMenu = new ContextMenu();
             trayIcon.ContextMenu.MenuItems.Add("Today Overview", (sender, e) => { OnTrayIconClick(sender, null); });
+            trayIcon.ContextMenu.MenuItems.Add("Configuration", (sender, e) => { navigator.Message("Not yet implemented"); });
             trayIcon.ContextMenu.MenuItems.Add("Exit", (sender, e) => Shutdown());
         }
 
         private void OnTrayIconClick(object sender, MouseEventArgs e)
         {
             if (e == null || e.Button == MouseButtons.Left)
-                navigator.OpenOverview();
+                navigator.Overview();
         }
 
         private async Task BootstrapAsync()

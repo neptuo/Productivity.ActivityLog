@@ -8,6 +8,9 @@ namespace Neptuo.Productivity.ActivityLog.Services
 {
     public interface INavigator
     {
-        void OpenOverview();
+        void Message(string message);
+        void Message(string title, string message);
+
+        void Overview();
     }
 }

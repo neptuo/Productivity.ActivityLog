@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Neptuo.Productivity.ActivityLog
 {
@@ -41,7 +42,7 @@ namespace Neptuo.Productivity.ActivityLog
             this.eventStoreFileNameGetter = eventStoreFileNameGetter;
         }
 
-        public void OpenOverview()
+        public void Overview()
         {
             if (mainWindow == null)
             {
@@ -104,6 +105,16 @@ namespace Neptuo.Productivity.ActivityLog
                 mainWindow.Closed -= OnMainWindowClosed;
                 mainWindow = null;
             }
+        }
+
+        public void Message(string message)
+        {
+            MessageBox.Show(message, "ActivityLog");
+        }
+
+        public void Message(string title, string message)
+        {
+            MessageBox.Show(message, title);
         }
     }
 }

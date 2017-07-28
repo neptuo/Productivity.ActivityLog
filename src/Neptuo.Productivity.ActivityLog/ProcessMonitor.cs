@@ -15,6 +15,7 @@ namespace Neptuo.Productivity.ActivityLog
     {
         private readonly Dictionary<int, string> processCache = new Dictionary<int, string>();
         private CancellationTokenSource cancellationSource;
+        private readonly HashSet<string> hostingProcessNames = new HashSet<string>() { "ApplicationFrameHost" };
 
         public event EventHandler<ProcessChangedEventArgs> Changed;
 
@@ -118,6 +119,13 @@ namespace Neptuo.Productivity.ActivityLog
             try
             {
                 Process process = Process.GetProcessById(processId);
+                if (hostingProcessNames.Contains(process.ProcessName))
+                {
+                    Process child = Win32.FindChildProcess(process.MainWindowHandle, p => !hostingProcessNames.Contains(p.ProcessName));
+                    if (child != null)
+                        process = child;
+                }
+
                 processCache[processId] = applicationPath = process.MainModule?.FileName;
                 return true;
             }

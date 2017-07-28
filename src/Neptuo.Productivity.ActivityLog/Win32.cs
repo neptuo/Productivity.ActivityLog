@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -23,7 +24,13 @@ namespace Neptuo.Productivity.ActivityLog
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowThreadProcessId(IntPtr handle, out uint processId);
-        
+
+        public delegate bool WindowEnumProc(IntPtr hwnd, IntPtr lparam);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc callback, IntPtr lParam);
+
         public static string GetWindowText(IntPtr handle)
         {
             int count = Win32.GetWindowTextLength(handle) + 1;
@@ -31,6 +38,29 @@ namespace Neptuo.Productivity.ActivityLog
             Win32.GetWindowText(handle, builder, count);
 
             return builder.ToString();
+        }
+
+        public static Process FindChildProcess(IntPtr hwnd, Func<Process, bool> selector)
+        {
+            Process selected = null;
+            EnumChildWindows(
+                hwnd, 
+                (child, lparam) =>
+                {
+                    GetWindowThreadProcessId(child, out uint processId);
+                    Process process = Process.GetProcessById((int)processId);
+                    if(selector(process))
+                    {
+                        selected = process;
+                        return false;
+                    }
+
+                    return true;
+                }, 
+                IntPtr.Zero
+            );
+
+            return selected;
         }
     }
 }
