@@ -22,6 +22,8 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using NotifyIcon = System.Windows.Forms.NotifyIcon;
 using Application = System.Windows.Application;
+using Neptuo.Productivity.ActivityLog.Views.Controls;
+using Neptuo.Productivity.ActivityLog.Properties;
 
 namespace Neptuo.Productivity.ActivityLog
 {
@@ -57,6 +59,8 @@ namespace Neptuo.Productivity.ActivityLog
 
             formatter = new SimpleFormatter();
             navigator = new ApplicationNavigator(timer, this, eventManager, formatter, GetEventStoreFileName);
+
+            SettingsExtension.Settings = Settings.Default;
 
             BootstrapAsync();
         }

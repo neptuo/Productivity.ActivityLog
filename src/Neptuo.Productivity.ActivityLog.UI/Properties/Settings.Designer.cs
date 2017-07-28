@@ -22,5 +22,29 @@ namespace Neptuo.Productivity.ActivityLog.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public double MainWindowLeft {
+            get {
+                return ((double)(this["MainWindowLeft"]));
+            }
+            set {
+                this["MainWindowLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public double MainWindowTop {
+            get {
+                return ((double)(this["MainWindowTop"]));
+            }
+            set {
+                this["MainWindowTop"] = value;
+            }
+        }
     }
 }

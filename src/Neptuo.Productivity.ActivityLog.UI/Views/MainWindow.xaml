@@ -6,10 +6,11 @@
         xmlns:dd="clr-namespace:Neptuo.Productivity.ActivityLog.Views.DesignData"
         xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:converters="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Converters"
+        xmlns:ui="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Controls"
         mc:Ignorable="d" d:DataContext="{x:Static dd:ViewModelLocator.Overview}"
         Title="ActivityLog" MinWidth="220" SizeToContent="WidthAndHeight"
         ResizeMode="CanMinimize" WindowStyle="None" Background="{StaticResource BackgroundBrush}"
-        PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown">
+        PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown" Left="{ui:Settings MainWindowLeft, IsTwoWayMode=True}" Top="{ui:Settings MainWindowTop, IsTwoWayMode=True}">
     <Window.Resources>
         <CollectionViewSource x:Key="ActivitiesCollection" Source="{Binding Activities}">
             <CollectionViewSource.SortDescriptions>

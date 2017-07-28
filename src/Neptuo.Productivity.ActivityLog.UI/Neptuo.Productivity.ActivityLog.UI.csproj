@@ -93,6 +93,7 @@
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
     <Compile Include="UiThreadTimer.cs" />
+    <Compile Include="Views\Controls\SettingsExtension.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
     <Compile Include="Views\Converters\FormatConverter.cs" />
     <Compile Include="Views\DesignData\Synchronizer.cs" />
