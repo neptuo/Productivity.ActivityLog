@@ -25,9 +25,11 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly IFormatter formatter;
         private readonly Func<DateTime, string> eventStoreFileNameGetter;
 
-        private TodayOverview mainWindow;
-        private UiThreadEventHandler<ActivityStarted> mainActivityStartedHandler;
-        private UiThreadEventHandler<ActivityEnded> mainActivityEndedHandler;
+        private TodayOverview todayOverview;
+        private UiThreadEventHandler<ActivityStarted> todayOverviewActivityStartedHandler;
+        private UiThreadEventHandler<ActivityEnded> todayOverviewActivityEndedHandler;
+
+        private Configuration configuration;
 
         public ApplicationNavigator(App application, ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IFormatter formatter, Func<DateTime, string> eventStoreFileNameGetter)
         {
@@ -45,9 +47,9 @@ namespace Neptuo.Productivity.ActivityLog
             this.eventStoreFileNameGetter = eventStoreFileNameGetter;
         }
 
-        public void Overview()
+        public void TodayOverview()
         {
-            if (mainWindow == null)
+            if (todayOverview == null)
             {
                 OverviewViewModel viewModel = new OverviewViewModel(
                     timer,
@@ -74,40 +76,39 @@ namespace Neptuo.Productivity.ActivityLog
                     }
                 }
 
-                mainActivityStartedHandler = eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer);
-                mainActivityEndedHandler = eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer);
+                todayOverviewActivityStartedHandler = eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer);
+                todayOverviewActivityEndedHandler = eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer);
 
-                mainWindow = new TodayOverview(viewModel);
-                mainWindow.Closed += OnMainWindowClosed;
+                todayOverview = new TodayOverview(viewModel);
+                todayOverview.Closed += OnTodayOverviewClosed;
             }
 
-            mainWindow.Show();
-            mainWindow.Activate();
+            todayOverview.Show();
+            todayOverview.Activate();
         }
 
-        private void OnMainWindowClosed(object sender, EventArgs e)
+        private void OnTodayOverviewClosed(object sender, EventArgs e)
         {
-            TryDisposeMainWindow();
+            TryDisposeTodayOverview();
         }
 
-        protected override void DisposeManagedResources()
+        public void Configuration()
         {
-            base.DisposeManagedResources();
-
-            TryDisposeMainWindow();
-        }
-
-        private void TryDisposeMainWindow()
-        {
-            if (mainWindow?.ViewModel != null)
+            if (configuration == null)
             {
-                eventHandlers
-                    .Remove(mainActivityStartedHandler)
-                    .Remove(mainActivityEndedHandler);
-
-                mainWindow.Closed -= OnMainWindowClosed;
-                mainWindow = null;
+                //ConfigurationViewModel viewModel = new ConfigurationViewModel();
+                ConfigurationViewModel viewModel = Views.DesignData.ViewModelLocator.Configuration;
+                configuration = new Configuration(viewModel);
+                configuration.Closed += OnConfigurationClosed;
             }
+
+            configuration.Show();
+            configuration.Activate();
+        }
+
+        private void OnConfigurationClosed(object sender, EventArgs e)
+        {
+            TryDisposeConfiguration();
         }
 
         public void Message(string message)
@@ -133,6 +134,36 @@ namespace Neptuo.Productivity.ActivityLog
         public void Exist()
         {
             application.Shutdown();
+        }
+
+        protected override void DisposeManagedResources()
+        {
+            base.DisposeManagedResources();
+
+            TryDisposeTodayOverview();
+            TryDisposeConfiguration();
+        }
+
+        private void TryDisposeTodayOverview()
+        {
+            if (todayOverview?.ViewModel != null)
+            {
+                eventHandlers
+                    .Remove(todayOverviewActivityStartedHandler)
+                    .Remove(todayOverviewActivityEndedHandler);
+
+                todayOverview.Closed -= OnTodayOverviewClosed;
+                todayOverview = null;
+            }
+        }
+
+        private void TryDisposeConfiguration()
+        {
+            if (configuration?.ViewModel != null)
+            {
+                configuration.Closed -= OnConfigurationClosed;
+                configuration = null;
+            }
         }
     }
 }

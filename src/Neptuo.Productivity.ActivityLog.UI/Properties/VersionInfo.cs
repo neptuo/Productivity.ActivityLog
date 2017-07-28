@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
-namespace Neptuo.Productivity.ActivityLog.UI
+namespace Neptuo.Productivity.ActivityLog
 {
     public class VersionInfo
     {

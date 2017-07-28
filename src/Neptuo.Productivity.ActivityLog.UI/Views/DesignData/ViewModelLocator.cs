@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace Neptuo.Productivity.ActivityLog.Views.DesignData
 {
@@ -22,8 +23,8 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                 if (overview == null)
                 {
                     overview = new OverviewViewModel(
-                        new Timer(), 
-                        new DateTimeProvider(), 
+                        new Timer(),
+                        new DateTimeProvider(),
                         new ApplicationNameProvider()
                     );
                     EventManager.AddAll(overview);
@@ -33,6 +34,28 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                 return overview;
             }
         }
+
+        private static ConfigurationViewModel configuration;
+
+        public static ConfigurationViewModel Configuration
+        {
+            get
+            {
+                if (configuration == null)
+                {
+                    configuration = new ConfigurationViewModel();
+                    configuration.Categories.Items.Add(new CategoryEditViewModel
+                    {
+                        Color = Colors.Red,
+                        Name = "Work"
+                    });
+                }
+
+                return configuration;
+            }
+        }
+
+        #region Services
 
         public static DefaultEventManager EventManager { get; } = new DefaultEventManager();
 
@@ -71,5 +94,7 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             Activity(@"C:\Windows\Explorer.exe", "This PC", AddSeconds(15));
             ActivityStarted(@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe", "Microsoft Visual Studio");
         }
+
+        #endregion
     }
 }

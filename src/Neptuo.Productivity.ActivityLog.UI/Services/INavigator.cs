@@ -13,7 +13,8 @@ namespace Neptuo.Productivity.ActivityLog.Services
         bool Confirm(string message);
         bool Confirm(string title, string message);
 
-        void Overview();
+        void TodayOverview();
+        void Configuration();
 
         void Exist();
     }

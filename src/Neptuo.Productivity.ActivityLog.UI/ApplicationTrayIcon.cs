@@ -24,19 +24,23 @@ namespace Neptuo.Productivity.ActivityLog
             icon = new NotifyIcon();
             icon.Icon = Icon.ExtractAssociatedIcon(Process.GetCurrentProcess().MainModule.FileName);
             icon.Text = "ActivityLog";
-            icon.MouseClick += OnIconClick;
+            icon.MouseClick += (sender, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                    navigator.TodayOverview();
+            };
             icon.Visible = true;
 
             icon.ContextMenu = new ContextMenu();
-            icon.ContextMenu.MenuItems.Add("Today Overview", (sender, e) => { OnIconClick(sender, null); });
-            icon.ContextMenu.MenuItems.Add("Configuration", (sender, e) => { navigator.Message("Not yet implemented"); });
+            icon.ContextMenu.MenuItems.Add("Today Overview", (sender, e) => navigator.TodayOverview());
+            icon.ContextMenu.MenuItems.Add("Configuration", (sender, e) => navigator.Configuration());
             icon.ContextMenu.MenuItems.Add("Exit", OnExitClick);
         }
 
         private void OnIconClick(object sender, MouseEventArgs e)
         {
             if (e == null || e.Button == MouseButtons.Left)
-                navigator.Overview();
+                navigator.TodayOverview();
         }
 
         private void OnExitClick(object sender, EventArgs e)

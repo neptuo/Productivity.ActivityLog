@@ -1,0 +1,72 @@
+﻿<Window x:Class="Neptuo.Productivity.ActivityLog.Views.Configuration"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dd="clr-namespace:Neptuo.Productivity.ActivityLog.Views.DesignData"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:converters="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Converters"
+        xmlns:ui="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Controls"
+        mc:Ignorable="d" d:DataContext="{x:Static dd:ViewModelLocator.Configuration}"
+        Title="ActivityLog :: Configuration" Icon="{StaticResource MainImage}" Width="500" SizeToContent="Height"
+        ResizeMode="CanMinimize" Background="{StaticResource BackgroundBrush}"
+        PreviewKeyDown="OnPreviewKeyDown">
+    <Window.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource DescriptionStyle}">
+            <Setter Property="Padding" Value="2" />
+        </Style>
+    </Window.Resources>
+    <DockPanel Style="{StaticResource RootPanelStyle}">
+        <Grid DockPanel.Dock="Bottom">
+            <StackPanel HorizontalAlignment="Right" Style="{StaticResource ActionBarStyle}">
+                <Button Content="Apply" Command="{Binding SaveCommand}" IsDefault="True" />
+                <Button x:Name="btnCancel" Click="btnCancel_Click" Content="Cancel" IsCancel="True" />
+            </StackPanel>
+        </Grid>
+
+        <TabControl>
+            <TabItem Header="General">
+
+            </TabItem>
+            <TabItem Header="Categories" DataContext="{Binding Categories}">
+                <ui:ListView ItemsSource="{Binding Items}" Label="List of your categories" CreateCommand="{Binding Create}" CreateCommandToolTip="Add a new category">
+                    <ui:ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource ListViewItemBorderStyle}">
+                                <DockPanel>
+                                    <Rectangle Width="32" Height="32" Margin="0,0,5,0" DockPanel.Dock="Left">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding Color}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <Button ToolTip="Remove additional application" Style="{StaticResource ListViewItemButtonStyle}"
+                                         Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.Remove}"
+                                         CommandParameter="{Binding}">
+                                            <fa:ImageAwesome Icon="Remove" Style="{StaticResource ImageAwesome}" Width="14" />
+                                        </Button>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource HeadingTextBlockStyle}" />
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ui:ListView.ItemTemplate>
+                </ui:ListView>
+            </TabItem>
+            <TabItem Header="About">
+                <Grid>
+                    <StackPanel VerticalAlignment="Bottom">
+                        <TextBlock Text="{Binding Version}" VerticalAlignment="Center" FontSize="30" Foreground="{StaticResource ForegroundBrush}" />
+                        <TextBlock Text="Neptuo" VerticalAlignment="Center" />
+                        <TextBlock Text="Copyright © 2017" VerticalAlignment="Center" />
+                        <Button x:Name="btnAbout" Content="Documentation" ToolTip="www.neptuo.com/project/desktop/activitylog" Click="btnAbout_Click" Style="{StaticResource LinkButtonStyle}" Margin="2,0,5,0" />
+                    </StackPanel>
+
+                    <StackPanel HorizontalAlignment="Right">
+                        <Button x:Name="btnErrorLog" Content="Error log" Click="btnErrorLog_Click" Margin="0" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

@@ -1,4 +1,4 @@
-﻿using Neptuo.Productivity.ActivityLog.UI;
+﻿using Neptuo.Productivity.ActivityLog;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
