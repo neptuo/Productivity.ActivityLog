@@ -68,7 +68,8 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
 
             Activity(@"C:\Windows\Notepad.exe", "Notepad", AddSeconds(20));
             Activity(@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe", "Microsoft Visual Studio", AddMinutes(20));
-            ActivityStarted(@"C:\Windows\Explorer.exe", "This PC");
+            Activity(@"C:\Windows\Explorer.exe", "This PC", AddSeconds(15));
+            ActivityStarted(@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe", "Microsoft Visual Studio");
         }
     }
 }

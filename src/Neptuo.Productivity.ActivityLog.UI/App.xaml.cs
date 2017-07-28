@@ -2,11 +2,10 @@
 using Neptuo.Events;
 using Neptuo.Formatters;
 using Neptuo.Productivity.ActivityLog.Data;
-using Neptuo.Productivity.ActivityLog.Events;
 using Neptuo.Productivity.ActivityLog.Formatters;
+using Neptuo.Productivity.ActivityLog.Properties;
 using Neptuo.Productivity.ActivityLog.Services;
-using Neptuo.Productivity.ActivityLog.ViewModels;
-using Neptuo.Productivity.ActivityLog.Views;
+using Neptuo.Productivity.ActivityLog.Views.Controls;
 using Neptuo.Windows.Threading;
 using System;
 using System.Collections.Generic;
@@ -20,10 +19,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using NotifyIcon = System.Windows.Forms.NotifyIcon;
 using Application = System.Windows.Application;
-using Neptuo.Productivity.ActivityLog.Views.Controls;
-using Neptuo.Productivity.ActivityLog.Properties;
+using NotifyIcon = System.Windows.Forms.NotifyIcon;
+using ContextMenu = System.Windows.Forms.ContextMenu;
 
 namespace Neptuo.Productivity.ActivityLog
 {
@@ -76,8 +74,8 @@ namespace Neptuo.Productivity.ActivityLog
             trayIcon.MouseClick += OnTrayIconClick;
             trayIcon.Visible = true;
 
-            trayIcon.ContextMenu = new System.Windows.Forms.ContextMenu();
-            trayIcon.ContextMenu.MenuItems.Add("Overview", (sender, e) => { OnTrayIconClick(sender, null); });
+            trayIcon.ContextMenu = new ContextMenu();
+            trayIcon.ContextMenu.MenuItems.Add("Today Overview", (sender, e) => { OnTrayIconClick(sender, null); });
             trayIcon.ContextMenu.MenuItems.Add("Exit", (sender, e) => Shutdown());
         }
 

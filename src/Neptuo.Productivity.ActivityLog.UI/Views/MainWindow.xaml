@@ -8,9 +8,10 @@
         xmlns:converters="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Converters"
         xmlns:ui="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Controls"
         mc:Ignorable="d" d:DataContext="{x:Static dd:ViewModelLocator.Overview}"
-        Title="ActivityLog" MinWidth="220" SizeToContent="WidthAndHeight"
+        Title="ActivityLog :: Today Overview" Icon="{StaticResource MainImage}" Width="300" SizeToContent="Height"
         ResizeMode="CanMinimize" WindowStyle="None" Background="{StaticResource BackgroundBrush}"
-        PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown" Left="{ui:Settings MainWindowLeft, IsTwoWayMode=True}" Top="{ui:Settings MainWindowTop, IsTwoWayMode=True}">
+        PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown" 
+        Left="{ui:Settings MainWindowLeft, IsTwoWayMode=True}" Top="{ui:Settings MainWindowTop, IsTwoWayMode=True}">
     <Window.Resources>
         <CollectionViewSource x:Key="ActivitiesCollection" Source="{Binding Activities}">
             <CollectionViewSource.SortDescriptions>
@@ -18,9 +19,12 @@
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
 
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource PlainButtonStyle}">
+        <Style x:Key="ButtonContainerStyle" TargetType="StackPanel">
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Orientation" Value="Horizontal" />
+        </Style>
+        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource PlainButtonStyle}">
             <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
             <Setter Property="Background" Value="Red" />
             <Setter Property="Padding" Value="4,1" />
@@ -42,8 +46,8 @@
                             <Border Padding="4" Background="{Binding IsForeground, Converter={StaticResource ActiveBackgroundConverter}}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" MaxWidth="300" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="{Binding Icon}" Width="24" Margin="0,0,4,0" />
@@ -56,7 +60,12 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
-            <Button x:Name="Close" Content="X" ToolTip="Close (Esc)" Click="Close_Click" Style="{StaticResource CloseButtonStyle}" />
+            <StackPanel Style="{StaticResource ButtonContainerStyle}">
+                <Button x:Name="Configuration" ToolTip="Configuration &amp; Help (F1)" Style="{StaticResource PlainButtonStyle}" Background="Transparent">
+                    <Image Source="{StaticResource ConfigurationImage}" Width="12" />
+                </Button>
+                <Button x:Name="Close" Content="X" ToolTip="Close (Esc)" Click="Close_Click" Style="{StaticResource CloseButtonStyle}" />
+            </StackPanel>
         </Grid>
     </Border>
 </Window>

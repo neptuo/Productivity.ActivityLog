@@ -158,11 +158,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="..\..\assets\Activity-Monitor.ico">
-      <Link>UI\Assets\Activity-Monitor.ico</Link>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Neptuo">
       <Version>5.5.0</Version>
     </PackageReference>
@@ -173,6 +168,13 @@
       <Version>1.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="..\..\assets\Activity-Monitor.ico">
+      <Link>Views\Assets\Activity-Monitor.ico</Link>
+    </Resource>
+    <Resource Include="..\..\assets\Settings.png">
+      <Link>Views\Assets\Settings.png</Link>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

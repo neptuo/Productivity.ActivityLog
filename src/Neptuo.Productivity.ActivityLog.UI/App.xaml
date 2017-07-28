@@ -9,7 +9,8 @@
                 <ResourceDictionary Source="/Views/Themes/Dark.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <BitmapImage x:Key="IconImage" UriSource="/Views/Assets/Activity-Monitor.ico" />
+            <BitmapImage x:Key="MainImage" UriSource="/Views/Assets/Activity-Monitor.ico" />
+            <BitmapImage x:Key="ConfigurationImage" UriSource="/Views/Assets/Settings.png" />
             
             <converters:CuttingConverter x:Key="ZeroOrLowerToVisibleConverter" EdgeValue="0" GreaterValue="Collapsed" LowerValue="Visible" EqualValue="Visible" />
             <converters:BoolConverter x:Key="ActiveBorderConverter" TrueValue="{StaticResource ActiveBrush}" FalseValue="{StaticResource InactiveBrush}" />
