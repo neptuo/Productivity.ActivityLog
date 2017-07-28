@@ -80,6 +80,8 @@ namespace Neptuo.Productivity.ActivityLog.Data
                             await eventDispatcher.PublishAsync(ended);
                     }
                 }
+
+                File.Delete(fileName);
             }
         }
     }

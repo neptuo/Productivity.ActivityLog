@@ -1,4 +1,5 @@
-﻿using Neptuo.Events;
+﻿using Neptuo.Diagnostics;
+using Neptuo.Events;
 using Neptuo.Formatters;
 using Neptuo.Productivity.ActivityLog.Data;
 using Neptuo.Productivity.ActivityLog.Events;
@@ -11,11 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Neptuo.Productivity.ActivityLog
 {
@@ -62,9 +65,12 @@ namespace Neptuo.Productivity.ActivityLog
 
             eventManager.AddAll(viewModel);
 
+            StartAsync(viewModel);
+        }
+
+        private async Task StartAsync(OverviewViewModel viewModel)
+        {
             SimpleFormatter formatter = new SimpleFormatter();
-            MainWindow wnd = new MainWindow(viewModel);
-            wnd.Show();
 
             string todayFile = GetEventStoreFileName(DateTime.Today);
             if (File.Exists(todayFile))
@@ -77,9 +83,9 @@ namespace Neptuo.Productivity.ActivityLog
                         foreach (IEvent output in (IEnumerable<IEvent>)context.Output)
                         {
                             if (output is ActivityStarted started)
-                                eventManager.PublishAsync(started).Wait();
+                                await eventManager.PublishAsync(started);
                             else if (output is ActivityEnded ended)
-                                eventManager.PublishAsync(ended).Wait();
+                                await eventManager.PublishAsync(ended);
                         }
                     }
                 }
@@ -88,9 +94,14 @@ namespace Neptuo.Productivity.ActivityLog
             FileEventStore store = new FileEventStore(formatter, GetEventStoreFileName);
             eventManager.AddAll(new EventStoreHandler(store));
 
-            RecoverAsync(formatter).Wait();
+            await RecoverAsync(formatter);
 
             service = new DomainService(eventManager);
+
+            await Task.Delay(3000);
+
+            MainWindow wnd = new MainWindow(viewModel);
+            wnd.Show();
         }
 
         private async Task RecoverAsync(IFormatter formatter)
