@@ -22,7 +22,7 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// <summary>
     /// Interaction logic for CategoryEdit.xaml
     /// </summary>
-    public partial class CategoryEdit : Window
+    public partial class CategoryEdit : Window, IViewModel<CategoryEditViewModel>
     {
         public CategoryEditViewModel ViewModel
         {

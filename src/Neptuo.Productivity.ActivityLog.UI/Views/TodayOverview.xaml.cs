@@ -18,14 +18,16 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using Neptuo.Windows.Threading;
+using Neptuo.Productivity.ActivityLog.Services;
 
 namespace Neptuo.Productivity.ActivityLog.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class TodayOverview : Window
+    public partial class TodayOverview : Window, IViewModel<OverviewViewModel>
     {
+        private readonly INavigator navigator;
         private readonly DispatcherHelper dispatcher;
 
         public OverviewViewModel ViewModel
@@ -33,9 +35,12 @@ namespace Neptuo.Productivity.ActivityLog.Views
             get { return (OverviewViewModel)DataContext; }
         }
 
-        public TodayOverview(OverviewViewModel viewModel)
+        public TodayOverview(OverviewViewModel viewModel, INavigator navigator)
         {
             Ensure.NotNull(viewModel, "viewModel");
+            Ensure.NotNull(navigator, "navigator");
+            this.navigator = navigator;
+
             InitializeComponent();
 
             dispatcher = new DispatcherHelper(Dispatcher);
@@ -99,6 +104,11 @@ namespace Neptuo.Productivity.ActivityLog.Views
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Configuration_Click(object sender, RoutedEventArgs e)
+        {
+            navigator.Configuration();
         }
     }
 }

@@ -27,12 +27,11 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly IEventHandlerCollection eventHandlers;
         private readonly IFormatter formatter;
         private readonly Func<DateTime, string> eventStoreFileNameGetter;
+        private readonly WindowContextFactory contextFactory;
 
-        private TodayOverview todayOverview;
-        private UiThreadEventHandler<ActivityStarted> todayOverviewActivityStartedHandler;
-        private UiThreadEventHandler<ActivityEnded> todayOverviewActivityEndedHandler;
-
-        private Configuration configuration;
+        private WindowContext<object, TodayOverview, OverviewViewModel> todayOverview;
+        private WindowContext<bool, Configuration, ConfigurationViewModel> configuration;
+        private WindowContext<ICategory, CategoryEdit, CategoryEditViewModel> categoryEdit;
 
         public ApplicationNavigator(App application, ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IFormatter formatter, Func<DateTime, string> eventStoreFileNameGetter)
         {
@@ -48,16 +47,13 @@ namespace Neptuo.Productivity.ActivityLog
             this.eventHandlers = eventHandlers;
             this.formatter = formatter;
             this.eventStoreFileNameGetter = eventStoreFileNameGetter;
+            this.contextFactory = new WindowContextFactory(eventHandlers, synchronizer);
         }
-
-        private TaskCompletionSource<object> todayOverviewCompletionSource;
 
         public Task TodayOverview()
         {
-            if (todayOverviewCompletionSource == null)
+            if (todayOverview == null || todayOverview.IsDisposed)
             {
-                todayOverviewCompletionSource = new TaskCompletionSource<object>();
-
                 OverviewViewModel viewModel = new OverviewViewModel(
                     timer,
                     new DateTimeProvider(),
@@ -83,34 +79,30 @@ namespace Neptuo.Productivity.ActivityLog
                     }
                 }
 
-                todayOverviewActivityStartedHandler = eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer);
-                todayOverviewActivityEndedHandler = eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer);
+                TodayOverview window = new TodayOverview(viewModel, this);
+                todayOverview = contextFactory.Create<object, TodayOverview, OverviewViewModel>(window);
 
-                todayOverview = new TodayOverview(viewModel);
-                todayOverview.Closed += OnTodayOverviewClosed;
+                todayOverview.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer));
+                todayOverview.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer));
             }
 
-            todayOverview.Show();
-            todayOverview.Activate();
+            todayOverview.Window.Show();
+            todayOverview.Window.Activate();
 
-            return todayOverviewCompletionSource.Task;
+            return todayOverview.CompletionSource.Task;
         }
-
-        private void OnTodayOverviewClosed(object sender, EventArgs e)
-        {
-            TryDisposeTodayOverview();
-        }
-
-        private TaskCompletionSource<bool> configurationCompletionSource;
-
+        
         public Task<bool> Configuration()
         {
-            if (configurationCompletionSource == null)
+            if (configuration == null || configuration.IsDisposed)
             {
-                configurationCompletionSource = new TaskCompletionSource<bool>();
-                configurationCompletionSource.Task.ContinueWith(OnConfigurationCompleted);
+                TaskCompletionSource<bool> completionSource = new TaskCompletionSource<bool>();
 
-                ConfigurationViewModel viewModel = new ConfigurationViewModel(this, Settings.Default, new TaskCompletionSourceNavigationHandler<bool>(configurationCompletionSource));
+                ConfigurationViewModel viewModel = new ConfigurationViewModel(
+                    this, 
+                    Settings.Default, 
+                    new TaskCompletionSourceNavigationHandler<bool>(completionSource)
+                );
                 viewModel.Categories.Items.AddRange(Settings.Default.Categories.Select(c =>
                 {
                     CategoryViewModel category = new CategoryViewModel()
@@ -126,43 +118,24 @@ namespace Neptuo.Productivity.ActivityLog
                     return category;
                 }));
 
-                configuration = new Configuration(viewModel);
-                configuration.Closed += OnConfigurationClosed;
-                configuration.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                Configuration window = new Configuration(viewModel);
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+                configuration = contextFactory.Create<bool, Configuration, ConfigurationViewModel>(window, completionSource);
             }
 
-            configuration.Show();
-            configuration.Activate();
-            return configurationCompletionSource.Task;
-        }
+            configuration.Window.Show();
+            configuration.Window.Activate();
 
-        private void OnConfigurationCompleted(Task<bool> task)
-        {
-            if (task.IsCompleted && task.Result)
-            {
-                synchronizer.Run(() =>
-                {
-                    configurationCompletionSource = null;
-                    TryDisposeConfiguration();
-                });
-            }
+            return configuration.CompletionSource.Task;
         }
-
-        private void OnConfigurationClosed(object sender, EventArgs e)
-        {
-            TryDisposeConfiguration();
-        }
-
-        private TaskCompletionSource<ICategory> categoryEditCompletionSource;
-        private CategoryEdit categoryEdit;
 
         private Task<ICategory> NewOrEditCategory(ICategory category)
         {
-            if (categoryEditCompletionSource == null)
+            if (categoryEdit == null || categoryEdit.IsDisposed)
             {
-                categoryEditCompletionSource = new TaskCompletionSource<ICategory>();
-
-                CategoryEditViewModel viewModel = new CategoryEditViewModel(OnCategoryEditSaved);
+                TaskCompletionSource<ICategory> completionSource = new TaskCompletionSource<ICategory>();
+                CategoryEditViewModel viewModel = new CategoryEditViewModel(new TaskCompletionSourceNavigationHandler<ICategory>(completionSource));
                 if (category == null)
                 {
                     viewModel.Color = Colors.Red;
@@ -178,19 +151,21 @@ namespace Neptuo.Productivity.ActivityLog
                     }));
                 }
 
-                categoryEdit = new CategoryEdit(viewModel);
-                categoryEdit.Closed += OnCategoryEditClosed;
+                CategoryEdit window = new CategoryEdit(viewModel);
 
-                if (configuration != null)
+
+                if (configuration != null && !configuration.IsDisposed)
                 {
-                    categoryEdit.Owner = configuration;
-                    categoryEdit.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    window.Owner = configuration.Window;
+                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 }
+
+                categoryEdit = contextFactory.Create<ICategory, CategoryEdit, CategoryEditViewModel>(window, completionSource);
             }
 
-            categoryEdit.Show();
-            categoryEdit.Activate();
-            return categoryEditCompletionSource.Task;
+            categoryEdit.Window.Show();
+            categoryEdit.Window.Activate();
+            return categoryEdit.CompletionSource.Task;
         }
 
         public Task<ICategory> NewCategory()
@@ -202,21 +177,6 @@ namespace Neptuo.Productivity.ActivityLog
         {
             Ensure.NotNull(category, "category");
             return NewOrEditCategory(category);
-        }
-
-        private void OnCategoryEditSaved()
-        {
-            if (categoryEditCompletionSource != null && categoryEdit != null)
-            {
-                categoryEditCompletionSource.SetResult(categoryEdit.ViewModel);
-                categoryEditCompletionSource = null;
-                categoryEdit.Close();
-            }
-        }
-
-        private void OnCategoryEditClosed(object sender, EventArgs e)
-        {
-            TryDisposeCategoryEdit();
         }
 
         public Task Message(string message)
@@ -250,60 +210,110 @@ namespace Neptuo.Productivity.ActivityLog
         {
             base.DisposeManagedResources();
 
-            TryDisposeTodayOverview();
-            TryDisposeConfiguration();
+            todayOverview?.Dispose();
+            configuration?.Dispose();
+            categoryEdit?.Dispose();
         }
-
-        private void TryDisposeTodayOverview()
+        
+        private class WindowContextFactory
         {
-            if (todayOverviewCompletionSource != null)
+            private readonly IEventHandlerCollection eventHandlers;
+            private readonly ISynchronizer synchronizer;
+
+            public WindowContextFactory(IEventHandlerCollection eventHandlers, ISynchronizer synchronizer)
             {
-                todayOverviewCompletionSource.SetResult(null);
-                todayOverviewCompletionSource = null;
+                Ensure.NotNull(eventHandlers, "eventHandlers");
+                Ensure.NotNull(synchronizer, "synchronizer");
+                this.eventHandlers = eventHandlers;
+                this.synchronizer = synchronizer;
             }
 
-            if (todayOverview?.ViewModel != null)
+            public WindowContext<TResult, TWindow, TViewModel> Create<TResult, TWindow, TViewModel>(TWindow window)
+                where TWindow : Window, IViewModel<TViewModel>
             {
-                eventHandlers
-                    .Remove(todayOverviewActivityStartedHandler)
-                    .Remove(todayOverviewActivityEndedHandler);
-
-                todayOverview.Closed -= OnTodayOverviewClosed;
-                todayOverview = null;
-            }
-        }
-
-        private void TryDisposeConfiguration()
-        {
-            if (configurationCompletionSource != null)
-            {
-                configurationCompletionSource.SetResult(false);
-                configurationCompletionSource = null;
+                return new WindowContext<TResult, TWindow, TViewModel>(window, eventHandlers, synchronizer);
             }
 
-            if (configuration?.ViewModel != null)
+            public WindowContext<TResult, TWindow, TViewModel> Create<TResult, TWindow, TViewModel>(TWindow window, TaskCompletionSource<TResult> completionSource)
+                where TWindow : Window, IViewModel<TViewModel>
             {
-                configuration.Closed -= OnConfigurationClosed;
-
-                if (configuration.IsVisible)
-                    configuration.Close();
-
-                configuration = null;
+                return new WindowContext<TResult, TWindow, TViewModel>(window, eventHandlers, synchronizer, completionSource);
             }
         }
 
-        private void TryDisposeCategoryEdit()
+        private class WindowContext<TResult, TWindow, TViewModel> : DisposableBase
+            where TWindow : Window, IViewModel<TViewModel>
         {
-            if (categoryEditCompletionSource != null)
+            private IEventHandlerCollection eventHandlers;
+            private ISynchronizer synchronizer;
+
+            public TWindow Window { get; private set; }
+            public TaskCompletionSource<TResult> CompletionSource { get; set; }
+            public List<UiThreadEventHandler> UiThreadHandlers { get; private set; }
+
+            public WindowContext(TWindow window, IEventHandlerCollection eventHandlers, ISynchronizer synchronizer)
+                : this(window, eventHandlers, synchronizer, new TaskCompletionSource<TResult>())
+            { }
+
+            public WindowContext(TWindow window, IEventHandlerCollection eventHandlers, ISynchronizer synchronizer, TaskCompletionSource<TResult> completionSource)
             {
-                categoryEditCompletionSource.SetResult(null);
-                categoryEditCompletionSource = null;
+                this.eventHandlers = eventHandlers;
+                this.synchronizer = synchronizer;
+
+                CompletionSource = completionSource;
+                CompletionSource.Task.ContinueWith(OnTaskCompleted);
+                Window = window;
+                Window.Closed += OnWindowClosed;
+                UiThreadHandlers = new List<UiThreadEventHandler>();
             }
 
-            if (categoryEdit?.ViewModel != null)
+            private void OnTaskCompleted(Task<TResult> task)
             {
-                categoryEdit.Closed -= OnCategoryEditClosed;
-                categoryEdit = null;
+                if (task.IsCompleted && !IsDisposed)
+                {
+                    synchronizer.Run(() =>
+                    {
+                        CompletionSource = null;
+                        Dispose();
+                    });
+                }
+            }
+
+            private void OnWindowClosed(object sender, EventArgs e)
+            {
+                Dispose();
+            }
+
+            protected override void DisposeManagedResources()
+            {
+                base.DisposeManagedResources();
+
+                if (CompletionSource != null)
+                {
+                    CompletionSource.SetResult(default(TResult));
+                    CompletionSource = null;
+                }
+
+                if (Window != null)
+                {
+                    Window.Closed -= OnWindowClosed;
+
+                    if (Window.IsVisible)
+                        Window.Close();
+
+                    if (Window.ViewModel != null && Window.ViewModel is IDisposable disposable)
+                        disposable.Dispose();
+
+                    Window = null;
+                }
+
+                if (UiThreadHandlers.Count > 0)
+                {
+                    foreach (UiThreadEventHandler handler in UiThreadHandlers)
+                        handler.Remove(eventHandlers);
+
+                    UiThreadHandlers.Clear();
+                }
             }
         }
     }

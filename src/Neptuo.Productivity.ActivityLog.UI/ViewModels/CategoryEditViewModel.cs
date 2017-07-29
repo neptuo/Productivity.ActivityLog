@@ -1,7 +1,7 @@
-﻿using Neptuo;
-using Neptuo.Observables;
-using Neptuo.Observables.Commands;
+﻿using Neptuo.Observables.Commands;
+using Neptuo.Productivity.ActivityLog.Services;
 using Neptuo.Productivity.ActivityLog.Services.Models;
+using Neptuo.Productivity.ActivityLog.ViewModels.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,48 +12,23 @@ using System.Windows.Input;
 
 namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
-    public class CategoryEditViewModel : CategoryViewModel
+    public class CategoryEditViewModel : CategoryViewModel, IDisposable
     {
         public ICommand CreateRule { get; private set; }
         public ICommand RemoveRule { get; private set; }
         public ICommand Save { get; private set; }
 
-        public CategoryEditViewModel(Action onSave)
+        public CategoryEditViewModel(INavigationHandler<ICategory> handler)
         {
-            Ensure.NotNull(onSave, "onSave");
             CreateRule = new DelegateCommand(() => Rules.Add(new RuleViewModel()));
             RemoveRule = new DelegateCommand<RuleViewModel>(vm => Rules.Remove(vm));
-            Save = new SaveCommand(this, onSave);
+            Save = new SaveCategoryEditCommand(this, handler);
         }
 
-        private class SaveCommand : Command
+        public void Dispose()
         {
-            private readonly CategoryEditViewModel viewModel;
-            private readonly Action onSave;
-
-            public SaveCommand(CategoryEditViewModel viewModel, Action onSave)
-            {
-                this.viewModel = viewModel;
-                this.onSave = onSave;
-
-                viewModel.PropertyChanged += OnPropertyChanged;
-            }
-
-            private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-            {
-                if (e.PropertyName == nameof(Name))
-                    RaiseCanExecuteChanged();
-            }
-
-            public override bool CanExecute()
-            {
-                return !string.IsNullOrEmpty(viewModel.Name);
-            }
-
-            public override void Execute()
-            {
-                onSave();
-            }
+            if (Save is IDisposable disposable)
+                disposable.Dispose();
         }
     }
 }

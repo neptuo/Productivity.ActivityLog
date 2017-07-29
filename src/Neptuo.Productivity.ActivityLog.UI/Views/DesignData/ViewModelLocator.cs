@@ -3,6 +3,7 @@ using Neptuo.Observables.Collections;
 using Neptuo.Productivity.ActivityLog.Events;
 using Neptuo.Productivity.ActivityLog.Properties;
 using Neptuo.Productivity.ActivityLog.Services;
+using Neptuo.Productivity.ActivityLog.Services.Models;
 using Neptuo.Productivity.ActivityLog.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -74,7 +75,7 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             {
                 if (categoryEdit == null)
                 {
-                    categoryEdit = new CategoryEditViewModel(() => { })
+                    categoryEdit = new CategoryEditViewModel(new NavigationHandler<ICategory>())
                     {
                         Color = Colors.Red,
                         Name = "Work"

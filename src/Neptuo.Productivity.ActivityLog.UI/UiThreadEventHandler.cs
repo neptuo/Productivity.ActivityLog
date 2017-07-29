@@ -10,7 +10,13 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog
 {
-    public class UiThreadEventHandler<T> : IEventHandler<T>
+    public abstract class UiThreadEventHandler
+    {
+        public abstract void Add(IEventHandlerCollection handlers);
+        public abstract void Remove(IEventHandlerCollection handlers);
+    }
+
+    public class UiThreadEventHandler<T> : UiThreadEventHandler, IEventHandler<T>
     {
         private readonly IEventHandler<T> handler;
         private readonly ISynchronizer synchronizer;
@@ -40,6 +46,18 @@ namespace Neptuo.Productivity.ActivityLog
             });
 
             return source.Task;
+        }
+
+        public override void Add(IEventHandlerCollection handlers)
+        {
+            Ensure.NotNull(handlers, "handlers");
+            handlers.Add(this);
+        }
+
+        public override void Remove(IEventHandlerCollection handlers)
+        {
+            Ensure.NotNull(handlers, "handlers");
+            handlers.Remove(this);
         }
     }
 

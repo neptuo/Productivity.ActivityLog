@@ -61,7 +61,7 @@
                 </ItemsControl>
             </StackPanel>
             <StackPanel Style="{StaticResource ButtonContainerStyle}">
-                <Button x:Name="Configuration" ToolTip="Configuration &amp; Help (F1)" Style="{StaticResource PlainButtonStyle}" Background="Transparent">
+                <Button x:Name="Configuration" ToolTip="Configuration &amp; Help (F1)" Click="Configuration_Click" Style="{StaticResource PlainButtonStyle}" Background="Transparent">
                     <Image Source="{StaticResource ConfigurationImage}" Width="12" />
                 </Button>
                 <Button x:Name="Close" Content="X" ToolTip="Close (Esc)" Click="Close_Click" Style="{StaticResource CloseButtonStyle}" />
