@@ -50,6 +50,16 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                         Color = Colors.Red,
                         Name = "Work"
                     });
+                    configuration.Categories.Items.Add(new CategoryViewModel
+                    {
+                        Color = Colors.Green,
+                        Name = "Fun"
+                    });
+                    configuration.Categories.Items.Add(new CategoryViewModel
+                    {
+                        Color = Colors.Brown,
+                        Name = "School"
+                    });
                 }
 
                 return configuration;

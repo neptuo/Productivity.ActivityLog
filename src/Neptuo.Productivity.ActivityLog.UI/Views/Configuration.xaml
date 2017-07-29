@@ -40,6 +40,17 @@
                                         </Rectangle.Fill>
                                     </Rectangle>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <Button ToolTip="Move category up" Style="{StaticResource ListViewItemButtonStyle}"
+                                         Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.MoveUp}"
+                                         CommandParameter="{Binding}">
+                                            <fa:ImageAwesome Icon="AngleUp" Style="{StaticResource ImageAwesome}" />
+                                        </Button>
+                                        <Button ToolTip="Move category down" Style="{StaticResource ListViewItemButtonStyle}"
+                                         Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.MoveDown}"
+                                         CommandParameter="{Binding}">
+                                            <fa:ImageAwesome Icon="AngleDown" Style="{StaticResource ImageAwesome}" />
+                                        </Button>
+                                        <TextBlock Text=" - " VerticalAlignment="Center" />
                                         <Button ToolTip="Edit category application" Style="{StaticResource ListViewItemButtonStyle}"
                                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.Edit}"
                                          CommandParameter="{Binding}">

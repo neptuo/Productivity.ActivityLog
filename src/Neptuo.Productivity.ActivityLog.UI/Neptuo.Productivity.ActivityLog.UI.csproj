@@ -107,6 +107,8 @@
     <Compile Include="ViewModels\CategoryEditViewModel.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\CategoryListViewModel.cs" />
+    <Compile Include="ViewModels\Commands\MoveDownCommand.cs" />
+    <Compile Include="ViewModels\Commands\MoveUpCommand.cs" />
     <Compile Include="ViewModels\Commands\SaveConfigurationCommand.cs" />
     <Compile Include="ViewModels\ConfigurationViewModel.cs" />
     <Compile Include="ViewModels\RuleViewModel.cs" />

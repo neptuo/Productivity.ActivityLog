@@ -4,6 +4,7 @@ using Neptuo.Observables.Collections;
 using Neptuo.Observables.Commands;
 using Neptuo.Productivity.ActivityLog.Services;
 using Neptuo.Productivity.ActivityLog.Services.Models;
+using Neptuo.Productivity.ActivityLog.ViewModels.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
         public ObservableCollection<CategoryViewModel> Items { get; private set; }
 
         public ICommand Create { get; private set; }
+        public ICommand MoveUp { get; private set; }
+        public ICommand MoveDown { get; private set; }
         public ICommand Edit { get; private set; }
         public ICommand Remove { get; private set; }
 
@@ -30,6 +33,8 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
             Items = new ObservableCollection<CategoryViewModel>();
             Create = new DelegateCommand(OnCreate);
+            MoveUp = new MoveUpCommand<CategoryViewModel>(Items);
+            MoveDown = new MoveDownCommand<CategoryViewModel>(Items);
             Edit = new DelegateCommand<CategoryViewModel>(OnEdit);
             Remove = new DelegateCommand<CategoryViewModel>(vm => Items.Remove(vm));
         }
