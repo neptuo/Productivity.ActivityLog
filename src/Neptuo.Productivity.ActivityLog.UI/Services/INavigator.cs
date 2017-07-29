@@ -9,17 +9,17 @@ namespace Neptuo.Productivity.ActivityLog.Services
 {
     public interface INavigator
     {
-        void Message(string message);
-        void Message(string title, string message);
-        bool Confirm(string message);
-        bool Confirm(string title, string message);
+        Task Message(string message);
+        Task Message(string title, string message);
+        Task<bool> Confirm(string message);
+        Task<bool> Confirm(string title, string message);
 
-        void TodayOverview();
-        void Configuration();
+        Task TodayOverview();
+        Task<bool> Configuration();
 
         Task<ICategory> EditCategory(ICategory category);
         Task<ICategory> NewCategory();
 
-        void Exist();
+        void Exit();
     }
 }

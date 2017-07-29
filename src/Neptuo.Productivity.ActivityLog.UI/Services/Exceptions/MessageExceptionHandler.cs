@@ -19,7 +19,7 @@ namespace Neptuo.Productivity.ActivityLog.Services.Exceptions
             this.navigator = navigator;
         }
 
-        public void Handle(Exception exception)
+        public async void Handle(Exception exception)
         {
             StringBuilder message = new StringBuilder();
 
@@ -29,8 +29,8 @@ namespace Neptuo.Productivity.ActivityLog.Services.Exceptions
 
             message.AppendLine(exceptionMessage);
             
-            if (navigator.Confirm("Do you want to kill the aplication?", message.ToString()))
-                navigator.Exist();
+            if (await navigator.Confirm("Do you want to kill the aplication?", message.ToString()))
+                navigator.Exit();
         }
     }
 }

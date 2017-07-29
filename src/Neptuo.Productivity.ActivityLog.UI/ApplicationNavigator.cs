@@ -50,10 +50,14 @@ namespace Neptuo.Productivity.ActivityLog
             this.eventStoreFileNameGetter = eventStoreFileNameGetter;
         }
 
-        public void TodayOverview()
+        private TaskCompletionSource<object> todayOverviewCompletionSource;
+
+        public Task TodayOverview()
         {
-            if (todayOverview == null)
+            if (todayOverviewCompletionSource == null)
             {
+                todayOverviewCompletionSource = new TaskCompletionSource<object>();
+
                 OverviewViewModel viewModel = new OverviewViewModel(
                     timer,
                     new DateTimeProvider(),
@@ -88,6 +92,8 @@ namespace Neptuo.Productivity.ActivityLog
 
             todayOverview.Show();
             todayOverview.Activate();
+
+            return todayOverviewCompletionSource.Task;
         }
 
         private void OnTodayOverviewClosed(object sender, EventArgs e)
@@ -95,11 +101,16 @@ namespace Neptuo.Productivity.ActivityLog
             TryDisposeTodayOverview();
         }
 
-        public void Configuration()
+        private TaskCompletionSource<bool> configurationCompletionSource;
+
+        public Task<bool> Configuration()
         {
-            if (configuration == null)
+            if (configurationCompletionSource == null)
             {
-                ConfigurationViewModel viewModel = new ConfigurationViewModel(this, Settings.Default);
+                configurationCompletionSource = new TaskCompletionSource<bool>();
+                configurationCompletionSource.Task.ContinueWith(OnConfigurationCompleted);
+
+                ConfigurationViewModel viewModel = new ConfigurationViewModel(this, Settings.Default, new TaskCompletionSourceNavigationHandler<bool>(configurationCompletionSource));
                 viewModel.Categories.Items.AddRange(Settings.Default.Categories.Select(c =>
                 {
                     CategoryViewModel category = new CategoryViewModel()
@@ -114,7 +125,7 @@ namespace Neptuo.Productivity.ActivityLog
                     }));
                     return category;
                 }));
-                //ConfigurationViewModel viewModel = Views.DesignData.ViewModelLocator.Configuration;
+
                 configuration = new Configuration(viewModel);
                 configuration.Closed += OnConfigurationClosed;
                 configuration.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -122,6 +133,19 @@ namespace Neptuo.Productivity.ActivityLog
 
             configuration.Show();
             configuration.Activate();
+            return configurationCompletionSource.Task;
+        }
+
+        private void OnConfigurationCompleted(Task<bool> task)
+        {
+            if (task.IsCompleted && task.Result)
+            {
+                synchronizer.Run(() =>
+                {
+                    configurationCompletionSource = null;
+                    TryDisposeConfiguration();
+                });
+            }
         }
 
         private void OnConfigurationClosed(object sender, EventArgs e)
@@ -195,27 +219,29 @@ namespace Neptuo.Productivity.ActivityLog
             TryDisposeCategoryEdit();
         }
 
-        public void Message(string message)
+        public Task Message(string message)
         {
             MessageBox.Show(message, "ActivityLog");
+            return Task.CompletedTask;
         }
 
-        public void Message(string title, string message)
+        public Task Message(string title, string message)
         {
             MessageBox.Show(message, "ActivityLog :: " + title);
+            return Task.CompletedTask;
         }
 
-        public bool Confirm(string message)
+        public Task<bool> Confirm(string message)
         {
-            return MessageBox.Show(message, "ActivityLog", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            return Task.FromResult(MessageBox.Show(message, "ActivityLog", MessageBoxButton.YesNo) == MessageBoxResult.Yes);
         }
 
-        public bool Confirm(string title, string message)
+        public Task<bool> Confirm(string title, string message)
         {
-            return MessageBox.Show(message, "ActivityLog :: " + title, MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            return Task.FromResult(MessageBox.Show(message, "ActivityLog :: " + title, MessageBoxButton.YesNo) == MessageBoxResult.Yes);
         }
 
-        public void Exist()
+        public void Exit()
         {
             application.Shutdown();
         }
@@ -230,6 +256,12 @@ namespace Neptuo.Productivity.ActivityLog
 
         private void TryDisposeTodayOverview()
         {
+            if (todayOverviewCompletionSource != null)
+            {
+                todayOverviewCompletionSource.SetResult(null);
+                todayOverviewCompletionSource = null;
+            }
+
             if (todayOverview?.ViewModel != null)
             {
                 eventHandlers
@@ -243,9 +275,19 @@ namespace Neptuo.Productivity.ActivityLog
 
         private void TryDisposeConfiguration()
         {
+            if (configurationCompletionSource != null)
+            {
+                configurationCompletionSource.SetResult(false);
+                configurationCompletionSource = null;
+            }
+
             if (configuration?.ViewModel != null)
             {
                 configuration.Closed -= OnConfigurationClosed;
+
+                if (configuration.IsVisible)
+                    configuration.Close();
+
                 configuration = null;
             }
         }

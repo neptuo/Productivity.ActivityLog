@@ -95,11 +95,13 @@
     <Compile Include="Services\IApplicationNameProvider.cs" />
     <Compile Include="Services\IconExtractor.cs" />
     <Compile Include="Services\IDateTimeProvider.cs" />
+    <Compile Include="Services\INavigationHandler.cs" />
     <Compile Include="Services\INavigator.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
     <Compile Include="Services\Models\ICategory.cs" />
     <Compile Include="Services\Models\IRule.cs" />
+    <Compile Include="TaskCompletionSourceNavigationHandler.cs" />
     <Compile Include="UiThreadEventHandler.cs" />
     <Compile Include="UiThreadTimer.cs" />
     <Compile Include="ViewModels\CategoryEditViewModel.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="Views\Controls\SettingsExtension.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
     <Compile Include="Views\Converters\FormatConverter.cs" />
+    <Compile Include="Views\DesignData\NavigationHandler.cs" />
     <Compile Include="Views\DesignData\Navigator.cs" />
     <Compile Include="Views\DesignData\Synchronizer.cs" />
     <Compile Include="Views\DesignData\Timer.cs" />

@@ -10,17 +10,17 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
 {
     public class Navigator : INavigator
     {
-        public void Configuration()
+        public Task<bool> Configuration()
         {
             throw new NotImplementedException();
         }
 
-        public bool Confirm(string message)
+        public Task<bool> Confirm(string message)
         {
             throw new NotImplementedException();
         }
 
-        public bool Confirm(string title, string message)
+        public Task<bool> Confirm(string title, string message)
         {
             throw new NotImplementedException();
         }
@@ -30,17 +30,17 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             throw new NotImplementedException();
         }
 
-        public void Exist()
+        public void Exit()
         {
             throw new NotImplementedException();
         }
 
-        public void Message(string message)
+        public Task Message(string message)
         {
             throw new NotImplementedException();
         }
 
-        public void Message(string title, string message)
+        public Task Message(string title, string message)
         {
             throw new NotImplementedException();
         }
@@ -50,7 +50,7 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             throw new NotImplementedException();
         }
 
-        public void TodayOverview()
+        public Task TodayOverview()
         {
             throw new NotImplementedException();
         }

@@ -1,6 +1,7 @@
 ﻿using Neptuo;
 using Neptuo.Observables.Commands;
 using Neptuo.Productivity.ActivityLog.Properties;
+using Neptuo.Productivity.ActivityLog.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,16 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels.Commands
     {
         private readonly ConfigurationViewModel viewModel;
         private readonly ISettings settings;
+        private readonly INavigationHandler<bool> handler;
 
-        internal SaveConfigurationCommand(ConfigurationViewModel viewModel, ISettings settings)
+        public SaveConfigurationCommand(ConfigurationViewModel viewModel, ISettings settings, INavigationHandler<bool> handler)
         {
             Ensure.NotNull(viewModel, "viewModel");
             Ensure.NotNull(settings, "settings");
+            Ensure.NotNull(handler, "handler");
             this.viewModel = viewModel;
             this.settings = settings;
+            this.handler = handler;
         }
 
         public override bool CanExecute()
@@ -32,7 +36,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels.Commands
             settings.Categories = viewModel.Categories.Items;
             settings.Save();
 
-            // TODO: Close configuration window.
+            handler.SetResult(true);
         }
     }
 }

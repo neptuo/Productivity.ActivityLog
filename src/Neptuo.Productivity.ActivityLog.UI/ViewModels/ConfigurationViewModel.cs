@@ -17,11 +17,11 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
         public CategoryListViewModel Categories { get; private set; }
         public ICommand Save { get; private set; }
 
-        internal ConfigurationViewModel(INavigator navigator, ISettings settings)
+        public ConfigurationViewModel(INavigator navigator, ISettings settings, INavigationHandler<bool> handler)
         {
             Version = VersionInfo.Version + VersionInfo.Preview;
             Categories = new CategoryListViewModel(navigator);
-            Save = new SaveConfigurationCommand(this, settings);
+            Save = new SaveConfigurationCommand(this, settings, handler);
         }
     }
 }

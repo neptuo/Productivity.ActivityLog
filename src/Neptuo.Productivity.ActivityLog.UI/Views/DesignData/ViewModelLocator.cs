@@ -44,7 +44,7 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             {
                 if (configuration == null)
                 {
-                    configuration = new ConfigurationViewModel(new Navigator(), Settings.Default);
+                    configuration = new ConfigurationViewModel(new Navigator(), Settings.Default, new NavigationHandler<bool>());
                     configuration.Categories.Items.Add(new CategoryViewModel
                     {
                         Color = Colors.Red,

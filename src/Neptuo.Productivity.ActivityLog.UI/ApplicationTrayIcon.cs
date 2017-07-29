@@ -45,7 +45,7 @@ namespace Neptuo.Productivity.ActivityLog
 
         private void OnExitClick(object sender, EventArgs e)
         {
-            navigator.Exist();
+            navigator.Exit();
         }
 
         protected override void DisposeManagedResources()
