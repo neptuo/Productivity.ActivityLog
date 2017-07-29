@@ -25,17 +25,17 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class TodayOverview : Window, IViewModel<OverviewViewModel>
+    public partial class TodayOverview : Window, IViewModel<TodayOverviewViewModel>
     {
         private readonly INavigator navigator;
         private readonly DispatcherHelper dispatcher;
 
-        public OverviewViewModel ViewModel
+        public TodayOverviewViewModel ViewModel
         {
-            get { return (OverviewViewModel)DataContext; }
+            get { return (TodayOverviewViewModel)DataContext; }
         }
 
-        public TodayOverview(OverviewViewModel viewModel, INavigator navigator)
+        public TodayOverview(TodayOverviewViewModel viewModel, INavigator navigator)
         {
             Ensure.NotNull(viewModel, "viewModel");
             Ensure.NotNull(navigator, "navigator");

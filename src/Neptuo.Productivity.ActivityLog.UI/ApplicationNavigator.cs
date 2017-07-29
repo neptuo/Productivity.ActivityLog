@@ -29,7 +29,7 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly Func<DateTime, string> eventStoreFileNameGetter;
         private readonly WindowContextFactory contextFactory;
 
-        private WindowContext<object, TodayOverview, OverviewViewModel> todayOverview;
+        private WindowContext<object, TodayOverview, TodayOverviewViewModel> todayOverview;
         private WindowContext<bool, Configuration, ConfigurationViewModel> configuration;
         private WindowContext<ICategory, CategoryEdit, CategoryEditViewModel> categoryEdit;
 
@@ -54,7 +54,7 @@ namespace Neptuo.Productivity.ActivityLog
         {
             if (todayOverview == null || todayOverview.IsDisposed)
             {
-                OverviewViewModel viewModel = new OverviewViewModel(
+                TodayOverviewViewModel viewModel = new TodayOverviewViewModel(
                     timer,
                     new DateTimeProvider(),
                     new ApplicationNameProvider()
@@ -80,7 +80,7 @@ namespace Neptuo.Productivity.ActivityLog
                 }
 
                 TodayOverview window = new TodayOverview(viewModel, this);
-                todayOverview = contextFactory.Create<object, TodayOverview, OverviewViewModel>(window);
+                todayOverview = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window);
 
                 todayOverview.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer));
                 todayOverview.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer));

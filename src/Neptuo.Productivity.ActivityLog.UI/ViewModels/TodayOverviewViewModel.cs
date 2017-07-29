@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
-    public class OverviewViewModel : IEventHandler<ActivityStarted>, IEventHandler<ActivityEnded>
+    public class TodayOverviewViewModel : IEventHandler<ActivityStarted>, IEventHandler<ActivityEnded>
     {
         private readonly ITimer timer;
         private readonly IDateTimeProvider dateTimeProvider;
@@ -25,7 +25,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             get { return activities; }
         }
 
-        public OverviewViewModel(ITimer timer, IDateTimeProvider dateTimeProvider, IApplicationNameProvider applicationNameProvider)
+        public TodayOverviewViewModel(ITimer timer, IDateTimeProvider dateTimeProvider, IApplicationNameProvider applicationNameProvider)
         {
             Ensure.NotNull(timer, "timer");
             Ensure.NotNull(dateTimeProvider, "dateTimeProvider");

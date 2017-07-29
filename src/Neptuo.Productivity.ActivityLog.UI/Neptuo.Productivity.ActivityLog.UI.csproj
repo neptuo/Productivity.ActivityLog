@@ -129,7 +129,7 @@
     <Compile Include="Views\DesignData\Timer.cs" />
     <Compile Include="Views\DesignData\ViewModelLocator.cs" />
     <Compile Include="ViewModels\ActivityOverviewViewModel.cs" />
-    <Compile Include="ViewModels\OverviewViewModel.cs" />
+    <Compile Include="ViewModels\TodayOverviewViewModel.cs" />
     <Compile Include="Views\Converters\BoolConverter.cs" />
     <Compile Include="Views\Converters\CuttingConverter.cs" />
     <Compile Include="Views\Converters\NullConverter.cs" />

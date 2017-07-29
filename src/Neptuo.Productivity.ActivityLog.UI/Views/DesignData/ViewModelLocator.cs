@@ -16,15 +16,15 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
 {
     internal class ViewModelLocator
     {
-        private static OverviewViewModel overview;
+        private static TodayOverviewViewModel overview;
 
-        public static OverviewViewModel Overview
+        public static TodayOverviewViewModel Overview
         {
             get
             {
                 if (overview == null)
                 {
-                    overview = new OverviewViewModel(
+                    overview = new TodayOverviewViewModel(
                         new Timer(),
                         new DateTimeProvider(),
                         new ApplicationNameProvider()
