@@ -188,23 +188,29 @@ namespace Neptuo.Productivity.ActivityLog
 
         public Task Message(string message)
         {
+            Ensure.NotNullOrEmpty(message, "message");
             MessageBox.Show(message, "ActivityLog");
             return Task.CompletedTask;
         }
 
         public Task Message(string title, string message)
         {
+            Ensure.NotNullOrEmpty(title, "title");
+            Ensure.NotNullOrEmpty(message, "message");
             MessageBox.Show(message, "ActivityLog :: " + title);
             return Task.CompletedTask;
         }
 
         public Task<bool> Confirm(string message)
         {
+            Ensure.NotNullOrEmpty(message, "message");
             return Task.FromResult(MessageBox.Show(message, "ActivityLog", MessageBoxButton.YesNo) == MessageBoxResult.Yes);
         }
 
         public Task<bool> Confirm(string title, string message)
         {
+            Ensure.NotNullOrEmpty(title, "title");
+            Ensure.NotNullOrEmpty(message, "message");
             return Task.FromResult(MessageBox.Show(message, "ActivityLog :: " + title, MessageBoxButton.YesNo) == MessageBoxResult.Yes);
         }
 
