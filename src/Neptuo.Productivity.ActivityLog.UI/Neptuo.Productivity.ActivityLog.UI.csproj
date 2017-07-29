@@ -82,6 +82,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApplicationCategoryResolver.cs" />
     <Compile Include="ApplicationNameProvider.cs" />
     <Compile Include="ApplicationNavigator.cs" />
     <Compile Include="ApplicationTrayIcon.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Services\Exceptions\LogExceptionHandler.cs" />
     <Compile Include="Services\Exceptions\MessageExceptionHandler.cs" />
     <Compile Include="Services\IApplicationNameProvider.cs" />
+    <Compile Include="Services\ICategoryResolver.cs" />
     <Compile Include="Services\IconExtractor.cs" />
     <Compile Include="Services\IDateTimeProvider.cs" />
     <Compile Include="Services\INavigationHandler.cs" />
