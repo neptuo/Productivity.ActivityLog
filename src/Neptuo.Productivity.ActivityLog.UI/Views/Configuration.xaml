@@ -19,7 +19,7 @@
     <DockPanel Style="{StaticResource RootPanelStyle}">
         <Grid DockPanel.Dock="Bottom">
             <StackPanel HorizontalAlignment="Right" Style="{StaticResource ActionBarStyle}">
-                <Button Content="Apply" Command="{Binding SaveCommand}" IsDefault="True" />
+                <Button Content="Apply" Command="{Binding Save}" IsDefault="True" />
                 <Button x:Name="btnCancel" Click="btnCancel_Click" Content="Cancel" IsCancel="True" />
             </StackPanel>
         </Grid>

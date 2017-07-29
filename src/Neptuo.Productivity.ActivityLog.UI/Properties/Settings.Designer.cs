@@ -46,5 +46,17 @@ namespace Neptuo.Productivity.ActivityLog.Properties {
                 this["MainWindowTop"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CategoriesRaw {
+            get {
+                return ((string)(this["CategoriesRaw"]));
+            }
+            set {
+                this["CategoriesRaw"] = value;
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Neptuo.Events;
 using Neptuo.Observables.Collections;
 using Neptuo.Productivity.ActivityLog.Events;
+using Neptuo.Productivity.ActivityLog.Properties;
 using Neptuo.Productivity.ActivityLog.Services;
 using Neptuo.Productivity.ActivityLog.ViewModels;
 using System;
@@ -43,7 +44,7 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             {
                 if (configuration == null)
                 {
-                    configuration = new ConfigurationViewModel(new Navigator());
+                    configuration = new ConfigurationViewModel(new Navigator(), Settings.Default);
                     configuration.Categories.Items.Add(new CategoryViewModel
                     {
                         Color = Colors.Red,

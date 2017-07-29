@@ -28,6 +28,8 @@ using Neptuo.Exceptions.Handlers;
 using Neptuo.Logging.Serialization.Formatters;
 using Neptuo.Logging;
 using Neptuo.Productivity.ActivityLog.Services.Exceptions;
+using Neptuo.Formatters.Converters;
+using Neptuo.Converters;
 
 namespace Neptuo.Productivity.ActivityLog
 {
@@ -72,6 +74,13 @@ namespace Neptuo.Productivity.ActivityLog
 
         private async Task BootstrapAsync()
         {
+            Converts.Repository
+                .AddJsonPrimitivesSearchHandler()
+                .AddJsonObjectSearchHandler()
+                .AddJsonEnumSearchHandler()
+                .AddEnumSearchHandler(false)
+                .AddToStringSearchHandler();
+
             BootstrapErrorHandler();
 
             FileEventStore store = new FileEventStore(formatter, GetEventStoreFileName);

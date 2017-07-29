@@ -3,6 +3,7 @@ using Neptuo.Events;
 using Neptuo.Events.Handlers;
 using Neptuo.Formatters;
 using Neptuo.Productivity.ActivityLog.Events;
+using Neptuo.Productivity.ActivityLog.Properties;
 using Neptuo.Productivity.ActivityLog.Services;
 using Neptuo.Productivity.ActivityLog.Services.Models;
 using Neptuo.Productivity.ActivityLog.ViewModels;
@@ -98,7 +99,21 @@ namespace Neptuo.Productivity.ActivityLog
         {
             if (configuration == null)
             {
-                ConfigurationViewModel viewModel = new ConfigurationViewModel(this);
+                ConfigurationViewModel viewModel = new ConfigurationViewModel(this, Settings.Default);
+                viewModel.Categories.Items.AddRange(Settings.Default.Categories.Select(c =>
+                {
+                    CategoryViewModel category = new CategoryViewModel()
+                    {
+                        Name = c.Name,
+                        Color = c.Color
+                    };
+                    category.Rules.AddRange(c.Rules.Select(r => new RuleViewModel()
+                    {
+                        ApplicationPath = r.ApplicationPath,
+                        WindowTitle = r.WindowTitle
+                    }));
+                    return category;
+                }));
                 //ConfigurationViewModel viewModel = Views.DesignData.ViewModelLocator.Configuration;
                 configuration = new Configuration(viewModel);
                 configuration.Closed += OnConfigurationClosed;
@@ -132,6 +147,11 @@ namespace Neptuo.Productivity.ActivityLog
                 {
                     viewModel.Color = category.Color;
                     viewModel.Name = category.Name;
+                    viewModel.Rules.AddRange(category.Rules.Select(r => new RuleViewModel()
+                    {
+                        ApplicationPath = r.ApplicationPath,
+                        WindowTitle = r.WindowTitle
+                    }));
                 }
 
                 categoryEdit = new CategoryEdit(viewModel);
