@@ -87,8 +87,12 @@
     <Compile Include="ApplicationTrayIcon.cs" />
     <Compile Include="Data\CategoryListModel.cs" />
     <Compile Include="DateTimeProvider.cs" />
-    <Compile Include="Properties\ISettings.cs" />
-    <Compile Include="Properties\Settings.Partial.cs" />
+    <Compile Include="Properties\ISettings.cs">
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Partial.cs">
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="Services\Exceptions\LogExceptionHandler.cs" />
     <Compile Include="Services\Exceptions\MessageExceptionHandler.cs" />
@@ -119,7 +123,9 @@
     <Compile Include="Views\Configuration.xaml.cs">
       <DependentUpon>Configuration.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\ListView.xaml.cs" />
+    <Compile Include="Views\Controls\ListView.xaml.cs">
+      <DependentUpon>ListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\SettingsExtension.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
     <Compile Include="Views\Converters\FormatConverter.cs" />
