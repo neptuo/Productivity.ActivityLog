@@ -18,11 +18,11 @@ namespace Neptuo.Productivity.ActivityLog.Properties
         {
             get
             {
-                if (!string.IsNullOrEmpty(CategoriesRaw))
+                if (categories == null)
                 {
-                    if (categories == null)
+                    categories = new CategoryListModel();
+                    if (!string.IsNullOrEmpty(CategoriesRaw))
                     {
-                        categories = new CategoryListModel();
                         JsonCompositeStorage storage = new JsonCompositeStorage();
                         using (MemoryStream source = new MemoryStream(Encoding.UTF8.GetBytes(CategoriesRaw)))
                         {

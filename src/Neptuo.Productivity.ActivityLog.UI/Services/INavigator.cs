@@ -15,6 +15,7 @@ namespace Neptuo.Productivity.ActivityLog.Services
         Task<bool> Confirm(string title, string message);
 
         Task TodayOverview();
+        Task TodayCategory();
         Task<bool> Configuration();
 
         Task<ICategory> EditCategory(ICategory category);

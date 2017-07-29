@@ -58,5 +58,29 @@ namespace Neptuo.Productivity.ActivityLog.Properties {
                 this["CategoriesRaw"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public double TodayCategoryWindowLeft {
+            get {
+                return ((double)(this["TodayCategoryWindowLeft"]));
+            }
+            set {
+                this["TodayCategoryWindowLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public double TodayCategoryWindowTop {
+            get {
+                return ((double)(this["TodayCategoryWindowTop"]));
+            }
+            set {
+                this["TodayCategoryWindowTop"] = value;
+            }
+        }
     }
 }

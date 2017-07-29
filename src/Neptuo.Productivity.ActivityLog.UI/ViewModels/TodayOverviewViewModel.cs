@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
-    public class TodayOverviewViewModel : IEventHandler<ActivityStarted>, IEventHandler<ActivityEnded>
+    public class TodayOverviewViewModel : IEventHandler<ActivityStarted>, IEventHandler<ActivityEnded>, IDisposable
     {
         private readonly ITimer timer;
         private readonly IDateTimeProvider dateTimeProvider;
@@ -38,10 +38,11 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
         private void OnTimerTick()
         {
+            DateTime now = dateTimeProvider.Now();
             foreach (ActivityOverviewViewModel item in activities)
             {
                 if (item.IsForeground)
-                    item.Update(dateTimeProvider.Now());
+                    item.Update(now);
             }
         }
 
@@ -82,6 +83,11 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             }
 
             return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            timer.Tick -= OnTimerTick;
         }
     }
 }

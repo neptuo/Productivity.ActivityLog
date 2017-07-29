@@ -10,6 +10,11 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
 {
     public class Navigator : INavigator
     {
+        public Task TodayCategory()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> Configuration()
         {
             throw new NotImplementedException();

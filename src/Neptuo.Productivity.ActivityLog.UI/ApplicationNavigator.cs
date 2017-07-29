@@ -30,6 +30,7 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly WindowContextFactory contextFactory;
 
         private WindowContext<object, TodayOverview, TodayOverviewViewModel> todayOverview;
+        private WindowContext<object, TodayCategory, TodayCategoryViewModel> todayCategory;
         private WindowContext<bool, Configuration, ConfigurationViewModel> configuration;
         private WindowContext<ICategory, CategoryEdit, CategoryEditViewModel> categoryEdit;
 
@@ -50,6 +51,28 @@ namespace Neptuo.Productivity.ActivityLog
             this.contextFactory = new WindowContextFactory(eventHandlers, synchronizer);
         }
 
+        private void ApplyEvents(object viewModel, DateTime day)
+        {
+            string todayFile = eventStoreFileNameGetter(day);
+            if (File.Exists(todayFile))
+            {
+                using (Stream file = File.OpenRead(todayFile))
+                {
+                    IDeserializerContext context = new DefaultDeserializerContext(typeof(IEnumerable<IEvent>));
+                    if (formatter.TryDeserialize(file, context))
+                    {
+                        foreach (IEvent output in (IEnumerable<IEvent>)context.Output)
+                        {
+                            if (output is ActivityStarted started && viewModel is IEventHandler<ActivityStarted> startedHandler)
+                                startedHandler.HandleAsync(started).Wait();
+                            else if (output is ActivityEnded ended && viewModel is IEventHandler<ActivityEnded> endedHandler)
+                                endedHandler.HandleAsync(ended).Wait();
+                        }
+                    }
+                }
+            }
+        }
+
         public Task TodayOverview()
         {
             if (todayOverview == null || todayOverview.IsDisposed)
@@ -60,24 +83,7 @@ namespace Neptuo.Productivity.ActivityLog
                     new ApplicationNameProvider()
                 );
 
-                string todayFile = eventStoreFileNameGetter(DateTime.Today);
-                if (File.Exists(todayFile))
-                {
-                    using (Stream file = File.OpenRead(todayFile))
-                    {
-                        IDeserializerContext context = new DefaultDeserializerContext(typeof(IEnumerable<IEvent>));
-                        if (formatter.TryDeserialize(file, context))
-                        {
-                            foreach (IEvent output in (IEnumerable<IEvent>)context.Output)
-                            {
-                                if (output is ActivityStarted started)
-                                    ((IEventHandler<ActivityStarted>)viewModel).HandleAsync(started).Wait();
-                                else if (output is ActivityEnded ended)
-                                    ((IEventHandler<ActivityEnded>)viewModel).HandleAsync(ended).Wait();
-                            }
-                        }
-                    }
-                }
+                ApplyEvents(viewModel, DateTime.Today);
 
                 TodayOverview window = new TodayOverview(viewModel, this);
                 todayOverview = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window);
@@ -91,7 +97,35 @@ namespace Neptuo.Productivity.ActivityLog
 
             return todayOverview.CompletionSource.Task;
         }
-        
+
+        public Task TodayCategory()
+        {
+            if (todayCategory == null || todayCategory.IsDisposed)
+            {
+                TodayCategoryViewModel viewModel = new TodayCategoryViewModel(
+                    new ApplicationCategoryResolver(Settings.Default),
+                    timer,
+                    new DateTimeProvider()
+                );
+
+                foreach (ICategory category in Settings.Default.Categories)
+                    viewModel.Activities.Add(new CategoryOverviewViewModel(category));
+
+                ApplyEvents(viewModel, DateTime.Today);
+
+                TodayCategory window = new TodayCategory(viewModel);
+                todayCategory = contextFactory.Create<object, TodayCategory, TodayCategoryViewModel>(window);
+
+                todayCategory.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer));
+                todayCategory.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer));
+            }
+
+            todayCategory.Window.Show();
+            todayCategory.Window.Activate();
+
+            return todayCategory.CompletionSource.Task;
+        }
+
         public Task<bool> Configuration()
         {
             if (configuration == null || configuration.IsDisposed)
@@ -99,8 +133,8 @@ namespace Neptuo.Productivity.ActivityLog
                 TaskCompletionSource<bool> completionSource = new TaskCompletionSource<bool>();
 
                 ConfigurationViewModel viewModel = new ConfigurationViewModel(
-                    this, 
-                    Settings.Default, 
+                    this,
+                    Settings.Default,
                     new TaskCompletionSourceNavigationHandler<bool>(completionSource)
                 );
                 viewModel.Categories.Items.AddRange(Settings.Default.Categories.Select(c =>
@@ -224,10 +258,11 @@ namespace Neptuo.Productivity.ActivityLog
             base.DisposeManagedResources();
 
             todayOverview?.Dispose();
+            todayCategory?.Dispose();
             configuration?.Dispose();
             categoryEdit?.Dispose();
         }
-        
+
         private class WindowContextFactory
         {
             private readonly IEventHandlerCollection eventHandlers;
