@@ -161,11 +161,18 @@ namespace Neptuo.Productivity.ActivityLog
                 }
 
                 categoryEdit = contextFactory.Create<ICategory, CategoryEdit, CategoryEditViewModel>(window, completionSource);
+                categoryEdit.CompletionSource.Task.ContinueWith(OnCategoryEditCompleted);
             }
 
             categoryEdit.Window.Show();
             categoryEdit.Window.Activate();
             return categoryEdit.CompletionSource.Task;
+        }
+
+        private void OnCategoryEditCompleted(Task<ICategory> task)
+        {
+            if (task.IsCompleted)
+                synchronizer.Run(() => Configuration());
         }
 
         public Task<ICategory> NewCategory()

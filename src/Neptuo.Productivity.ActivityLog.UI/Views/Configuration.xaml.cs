@@ -45,7 +45,10 @@ namespace Neptuo.Productivity.ActivityLog.Views
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
+            {
                 Close();
+                e.Handled = true;
+            }
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
