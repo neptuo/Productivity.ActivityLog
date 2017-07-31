@@ -50,7 +50,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
         public double DurationRaw
         {
-            get { return Duration.TotalMilliseconds; }
+            get { return Duration.TotalSeconds; }
         }
 
         public CategoryDurationViewModel(ICategory model)

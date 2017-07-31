@@ -29,7 +29,11 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             {
                 if (dateFrom != value)
                 {
-                    dateFrom = value;
+                    if (value == null)
+                        dateFrom = value;
+                    else
+                        dateFrom = value.Value.Date;
+
                     RaisePropertyChanged();
                     ReloadActivities();
                 }
@@ -44,7 +48,11 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             {
                 if (dateTo != value)
                 {
-                    dateTo = value;
+                    if (value == null)
+                        dateTo = value;
+                    else
+                        dateTo = value.Value.Date;
+
                     RaisePropertyChanged();
                     ReloadActivities();
                 }
@@ -69,9 +77,6 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
             timer.Tick += OnTimerTick;
             activities = new ObservableCollection<CategoryDurationViewModel>();
-
-            DateFrom = DateTo = dateTimeProvider.Now().Date;
-            ReloadActivities();
         }
 
         private void OnTimerTick()
@@ -84,7 +89,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             }
         }
 
-        private void ReloadActivities()
+        public void ReloadActivities()
         {
             if (DateFrom != null && DateTo != null && DateFrom.Value <= DateTo.Value)
             {
@@ -97,12 +102,15 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
         Task IEventHandler<ActivityStarted>.HandleAsync(ActivityStarted payload)
         {
-            ICategory category = resolver.TryResolve(payload.ApplicationPath, payload.WindowTitle);
-            if (category != null)
+            if (IsBetween(payload.StartedAt))
             {
-                CategoryDurationViewModel viewModel = activities.FirstOrDefault(vm => vm.Name == category.Name);
-                if (viewModel != null)
-                    viewModel.StartAt(payload.StartedAt);
+                ICategory category = resolver.TryResolve(payload.ApplicationPath, payload.WindowTitle);
+                if (category != null)
+                {
+                    CategoryDurationViewModel viewModel = activities.FirstOrDefault(vm => vm.Name == category.Name);
+                    if (viewModel != null)
+                        viewModel.StartAt(payload.StartedAt);
+                }
             }
 
             return Task.CompletedTask;
@@ -110,15 +118,27 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
         Task IEventHandler<ActivityEnded>.HandleAsync(ActivityEnded payload)
         {
-            ICategory category = resolver.TryResolve(payload.ApplicationPath, payload.WindowTitle);
-            if (category != null)
+            if (IsBetween(payload.EndedAt))
             {
-                CategoryDurationViewModel viewModel = activities.FirstOrDefault(vm => vm.Name == category.Name);
-                if (viewModel != null)
-                    viewModel.StopAt(payload.EndedAt);
+                ICategory category = resolver.TryResolve(payload.ApplicationPath, payload.WindowTitle);
+                if (category != null)
+                {
+                    CategoryDurationViewModel viewModel = activities.FirstOrDefault(vm => vm.Name == category.Name);
+                    if (viewModel != null)
+                        viewModel.StopAt(payload.EndedAt);
+                }
             }
 
             return Task.CompletedTask;
+        }
+
+        private bool IsBetween(DateTime value)
+        {
+            if (DateFrom == null || DateTo == null)
+                return false;
+
+            value = value.Date;
+            return DateFrom.Value <= value && DateTo.Value >= value;
         }
 
         public void Dispose()

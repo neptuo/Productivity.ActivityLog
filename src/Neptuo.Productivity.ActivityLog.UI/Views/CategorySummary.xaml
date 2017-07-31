@@ -23,13 +23,28 @@
         </Grid.RowDefinitions>
         <StackPanel Style="{StaticResource EditorPanelStyle}" Grid.Row="0" Grid.Column="0">
             <Label Target="{Binding ElementName=DateFromBox}" Content="Date from:" />
-            <TextBox x:Name="DateFromBox" Text="{Binding DateFrom}" />
+            <TextBox x:Name="DateFromBox" Text="{Binding DateFrom, StringFormat=yyyy-MM-dd}" />
         </StackPanel>
         <StackPanel Style="{StaticResource EditorPanelStyle}" Grid.Row="0" Grid.Column="2">
             <Label Target="{Binding ElementName=DateToBox}" Content="Date from:" />
-            <TextBox x:Name="DateToBox" Text="{Binding DateTo}" />
+            <TextBox x:Name="DateToBox" Text="{Binding DateTo, StringFormat=yyyy-MM-dd}" />
         </StackPanel>
 
-        <ui:PieChart ItemsSource="{Binding Activities}" Thickness="30" ValuePath="DurationRaw" ForegroundPath="ColorBrush" Grid.Row="1" Grid.ColumnSpan="3" />
+        <Grid Grid.Row="1" Grid.ColumnSpan="3">
+            <ui:PieChart ItemsSource="{Binding Activities}" Thickness="30" ValuePath="DurationRaw" ForegroundPath="ColorBrush" TooltipPath="Name" />
+
+            <ItemsControl ItemsSource="{Binding Activities}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,2" Padding="8,4" Background="{Binding ColorBrush}">
+                            <Grid>
+                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Text="{Binding Duration, Converter={StaticResource TimeSpanConverter}}" HorizontalAlignment="Right" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
     </Grid>
 </Window>

@@ -55,7 +55,7 @@ namespace Neptuo.Productivity.ActivityLog
             dateFrom = dateFrom.Date;
             dateTo = dateTo.Date;
 
-            if (dateFrom < dateTo)
+            if (dateFrom <= dateTo)
             {
                 do
                 {
