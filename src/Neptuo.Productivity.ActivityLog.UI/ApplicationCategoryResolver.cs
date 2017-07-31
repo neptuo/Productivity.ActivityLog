@@ -42,7 +42,7 @@ namespace Neptuo.Productivity.ActivityLog
             if (string.IsNullOrEmpty(pattern))
                 return false;
 
-            Regex regex = new Regex("^" + pattern.Replace(@"\", @"\\").Replace("*", ".*?") + "$");
+            Regex regex = new Regex("^" + pattern.Replace(@"\", @"\\").Replace("*", ".*?") + "$", RegexOptions.IgnoreCase);
             if (!regex.IsMatch(value))
                 return false;
 
