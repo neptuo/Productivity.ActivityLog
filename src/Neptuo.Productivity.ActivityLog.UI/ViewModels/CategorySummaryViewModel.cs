@@ -13,19 +13,19 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
-    public class TodayCategoryViewModel : ObservableObject, IEventHandler<ActivityStarted>, IEventHandler<ActivityEnded>, IDisposable
+    public class CategorySummaryViewModel : ObservableObject, IEventHandler<ActivityStarted>, IEventHandler<ActivityEnded>, IDisposable
     {
         private readonly ICategoryResolver resolver;
         private readonly ITimer timer;
         private readonly IDateTimeProvider dateTimeProvider;
-        private readonly ObservableCollection<CategoryOverviewViewModel> activities;
+        private readonly ObservableCollection<CategoryDurationViewModel> activities;
 
-        public IList<CategoryOverviewViewModel> Activities
+        public IList<CategoryDurationViewModel> Activities
         {
             get { return activities; }
         }
 
-        public TodayCategoryViewModel(ICategoryResolver resolver, ITimer timer, IDateTimeProvider dateTimeProvider)
+        public CategorySummaryViewModel(ICategoryResolver resolver, ITimer timer, IDateTimeProvider dateTimeProvider)
         {
             Ensure.NotNull(resolver, "resolver");
             Ensure.NotNull(timer, "timer");
@@ -35,13 +35,13 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             this.dateTimeProvider = dateTimeProvider;
 
             timer.Tick += OnTimerTick;
-            activities = new ObservableCollection<CategoryOverviewViewModel>();
+            activities = new ObservableCollection<CategoryDurationViewModel>();
         }
 
         private void OnTimerTick()
         {
             DateTime now = dateTimeProvider.Now();
-            foreach (CategoryOverviewViewModel item in activities)
+            foreach (CategoryDurationViewModel item in activities)
             {
                 if (item.IsForeground)
                     item.Update(dateTimeProvider.Now());
@@ -53,7 +53,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             ICategory category = resolver.TryResolve(payload.ApplicationPath, payload.WindowTitle);
             if (category != null)
             {
-                CategoryOverviewViewModel viewModel = activities.FirstOrDefault(vm => vm.Name == category.Name);
+                CategoryDurationViewModel viewModel = activities.FirstOrDefault(vm => vm.Name == category.Name);
                 if (viewModel != null)
                     viewModel.StartAt(payload.StartedAt);
             }
@@ -66,7 +66,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             ICategory category = resolver.TryResolve(payload.ApplicationPath, payload.WindowTitle);
             if (category != null)
             {
-                CategoryOverviewViewModel viewModel = activities.FirstOrDefault(vm => vm.Name == category.Name);
+                CategoryDurationViewModel viewModel = activities.FirstOrDefault(vm => vm.Name == category.Name);
                 if (viewModel != null)
                     viewModel.StopAt(payload.EndedAt);
             }

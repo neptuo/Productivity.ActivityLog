@@ -29,8 +29,8 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly Func<DateTime, string> eventStoreFileNameGetter;
         private readonly WindowContextFactory contextFactory;
 
-        private WindowContext<object, TodayOverview, TodayOverviewViewModel> todayOverview;
-        private WindowContext<object, TodayCategory, TodayCategoryViewModel> todayCategory;
+        private WindowContext<object, CategorySummary, CategorySummaryViewModel> todayCategory;
+        private WindowContext<object, TodayOverview, TodayOverviewViewModel> categorySummary;
         private WindowContext<bool, Configuration, ConfigurationViewModel> configuration;
         private WindowContext<ICategory, CategoryEdit, CategoryEditViewModel> categoryEdit;
 
@@ -75,7 +75,7 @@ namespace Neptuo.Productivity.ActivityLog
 
         public Task TodayOverview()
         {
-            if (todayOverview == null || todayOverview.IsDisposed)
+            if (categorySummary == null || categorySummary.IsDisposed)
             {
                 TodayOverviewViewModel viewModel = new TodayOverviewViewModel(
                     timer,
@@ -86,35 +86,35 @@ namespace Neptuo.Productivity.ActivityLog
                 ApplyEvents(viewModel, DateTime.Today);
 
                 TodayOverview window = new TodayOverview(viewModel, this);
-                todayOverview = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window);
+                categorySummary = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window);
 
-                todayOverview.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer));
-                todayOverview.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer));
+                categorySummary.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer));
+                categorySummary.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer));
             }
 
-            todayOverview.Window.Show();
-            todayOverview.Window.Activate();
+            categorySummary.Window.Show();
+            categorySummary.Window.Activate();
 
-            return todayOverview.CompletionSource.Task;
+            return categorySummary.CompletionSource.Task;
         }
 
-        public Task TodayCategory()
+        public Task CategorySummary()
         {
             if (todayCategory == null || todayCategory.IsDisposed)
             {
-                TodayCategoryViewModel viewModel = new TodayCategoryViewModel(
+                CategorySummaryViewModel viewModel = new CategorySummaryViewModel(
                     new ApplicationCategoryResolver(Settings.Default),
                     timer,
                     new DateTimeProvider()
                 );
 
                 foreach (ICategory category in Settings.Default.Categories)
-                    viewModel.Activities.Add(new CategoryOverviewViewModel(category));
+                    viewModel.Activities.Add(new CategoryDurationViewModel(category));
 
                 ApplyEvents(viewModel, DateTime.Today);
 
-                TodayCategory window = new TodayCategory(viewModel);
-                todayCategory = contextFactory.Create<object, TodayCategory, TodayCategoryViewModel>(window);
+                CategorySummary window = new CategorySummary(viewModel);
+                todayCategory = contextFactory.Create<object, CategorySummary, CategorySummaryViewModel>(window);
 
                 todayCategory.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer));
                 todayCategory.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer));
@@ -257,7 +257,7 @@ namespace Neptuo.Productivity.ActivityLog
         {
             base.DisposeManagedResources();
 
-            todayOverview?.Dispose();
+            categorySummary?.Dispose();
             todayCategory?.Dispose();
             configuration?.Dispose();
             categoryEdit?.Dispose();

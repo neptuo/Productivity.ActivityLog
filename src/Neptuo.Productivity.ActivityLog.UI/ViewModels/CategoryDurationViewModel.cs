@@ -10,7 +10,7 @@ using System.Windows.Media;
 
 namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
-    public class CategoryOverviewViewModel : ObservableObject
+    public class CategoryDurationViewModel : ObservableObject
     {
         private TimeSpan lastDuration;
         private DateTime lastStartedAt;
@@ -53,7 +53,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             get { return Duration.TotalMilliseconds; }
         }
 
-        public CategoryOverviewViewModel(ICategory model)
+        public CategoryDurationViewModel(ICategory model)
         {
             Ensure.NotNull(model, "category");
             Name = model.Name;

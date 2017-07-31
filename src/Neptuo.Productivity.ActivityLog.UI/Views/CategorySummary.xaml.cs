@@ -20,14 +20,14 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// <summary>
     /// Interaction logic for TodayCategory.xaml
     /// </summary>
-    public partial class TodayCategory : Window, IViewModel<TodayCategoryViewModel>
+    public partial class CategorySummary : Window, IViewModel<CategorySummaryViewModel>
     {
-        public TodayCategoryViewModel ViewModel
+        public CategorySummaryViewModel ViewModel
         {
-            get { return (TodayCategoryViewModel)DataContext; }
+            get { return (CategorySummaryViewModel)DataContext; }
         }
 
-        public TodayCategory(TodayCategoryViewModel viewModel)
+        public CategorySummary(CategorySummaryViewModel viewModel)
         {
             Ensure.NotNull(viewModel, "viewModel");
             InitializeComponent();

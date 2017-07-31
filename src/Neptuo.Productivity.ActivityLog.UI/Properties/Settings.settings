@@ -11,10 +11,10 @@
     <Setting Name="CategoriesRaw" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="TodayCategoryWindowLeft" Type="System.Double" Scope="User">
+    <Setting Name="CategorySummaryWindowLeft" Type="System.Double" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
-    <Setting Name="TodayCategoryWindowTop" Type="System.Double" Scope="User">
+    <Setting Name="CategorySummaryWindowTop" Type="System.Double" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
   </Settings>

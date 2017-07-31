@@ -62,24 +62,24 @@ namespace Neptuo.Productivity.ActivityLog.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1")]
-        public double TodayCategoryWindowLeft {
+        public double CategorySummaryWindowLeft {
             get {
-                return ((double)(this["TodayCategoryWindowLeft"]));
+                return ((double)(this["CategorySummaryWindowLeft"]));
             }
             set {
-                this["TodayCategoryWindowLeft"] = value;
+                this["CategorySummaryWindowLeft"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1")]
-        public double TodayCategoryWindowTop {
+        public double CategorySummaryWindowTop {
             get {
-                return ((double)(this["TodayCategoryWindowTop"]));
+                return ((double)(this["CategorySummaryWindowTop"]));
             }
             set {
-                this["TodayCategoryWindowTop"] = value;
+                this["CategorySummaryWindowTop"] = value;
             }
         }
     }

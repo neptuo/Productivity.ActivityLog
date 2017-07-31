@@ -101,13 +101,13 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             }
         }
 
-        private static TodayCategoryViewModel todayCategory;
+        private static CategorySummaryViewModel categorySummary;
 
-        public static TodayCategoryViewModel TodayCategory
+        public static CategorySummaryViewModel CategorySummary
         {
             get
             {
-                if (todayCategory == null)
+                if (categorySummary == null)
                 {
                     CategoryResolver resolver = new CategoryResolver();
                     resolver.ApplicationPathToCategory[@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe"] = resolver.ApplicationPathToCategory[@"C:\Windows\Notepad.exe"] = new CategoryViewModel()
@@ -121,16 +121,16 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                         Color = Colors.Blue
                     };
 
-                    todayCategory = new TodayCategoryViewModel(
+                    categorySummary = new CategorySummaryViewModel(
                         resolver, 
                         new Timer(), 
                         new DateTimeProvider()
                     );
-                    EventManager.AddAll(todayCategory);
+                    EventManager.AddAll(categorySummary);
                     GenerateEventStream();
                 }
 
-                return todayCategory;
+                return categorySummary;
             }
         }
 
