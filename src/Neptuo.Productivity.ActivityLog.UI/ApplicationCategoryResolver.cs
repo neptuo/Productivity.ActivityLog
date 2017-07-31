@@ -37,7 +37,12 @@ namespace Neptuo.Productivity.ActivityLog
         public static bool IsMatch(string value, string pattern)
         {
             if (string.IsNullOrEmpty(value))
+            {
+                if (pattern == "*")
+                    return true;
+
                 return string.IsNullOrEmpty(pattern);
+            }
 
             if (string.IsNullOrEmpty(pattern))
                 return false;
