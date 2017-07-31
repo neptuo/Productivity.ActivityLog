@@ -68,10 +68,13 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
         public void StopAt(DateTime endedAt)
         {
-            IsForeground = false;
-            lastEndedAt = endedAt;
-            lastDuration = lastDuration + (lastEndedAt - lastStartedAt);
-            Duration = lastDuration;
+            if (lastStartedAt > DateTime.MinValue)
+            {
+                IsForeground = false;
+                lastEndedAt = endedAt;
+                lastDuration = lastDuration + (lastEndedAt - lastStartedAt);
+                Duration = lastDuration;
+            }
         }
 
         public void Update(DateTime now)
