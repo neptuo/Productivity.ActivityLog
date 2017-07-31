@@ -18,24 +18,60 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
         private readonly ICategoryResolver resolver;
         private readonly ITimer timer;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly IHistoryApplier applier;
         private readonly ObservableCollection<CategoryDurationViewModel> activities;
+
+        private DateTime? dateFrom;
+        public DateTime? DateFrom
+        {
+            get { return dateFrom; }
+            set
+            {
+                if (dateFrom != value)
+                {
+                    dateFrom = value;
+                    RaisePropertyChanged();
+                    ReloadActivities();
+                }
+            }
+        }
+
+        private DateTime? dateTo;
+        public DateTime? DateTo
+        {
+            get { return dateTo; }
+            set
+            {
+                if (dateTo != value)
+                {
+                    dateTo = value;
+                    RaisePropertyChanged();
+                    ReloadActivities();
+                }
+            }
+        }
 
         public IList<CategoryDurationViewModel> Activities
         {
             get { return activities; }
         }
 
-        public CategorySummaryViewModel(ICategoryResolver resolver, ITimer timer, IDateTimeProvider dateTimeProvider)
+        public CategorySummaryViewModel(ICategoryResolver resolver, ITimer timer, IDateTimeProvider dateTimeProvider, IHistoryApplier applier)
         {
             Ensure.NotNull(resolver, "resolver");
             Ensure.NotNull(timer, "timer");
             Ensure.NotNull(dateTimeProvider, "dateTimeProvider");
+            Ensure.NotNull(applier, "applier");
             this.resolver = resolver;
             this.timer = timer;
             this.dateTimeProvider = dateTimeProvider;
+            this.applier = applier;
 
             timer.Tick += OnTimerTick;
             activities = new ObservableCollection<CategoryDurationViewModel>();
+
+            DateFrom = DateTo = dateTimeProvider.Now().Date;
+            ReloadActivities();
         }
 
         private void OnTimerTick()
@@ -45,6 +81,17 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             {
                 if (item.IsForeground)
                     item.Update(dateTimeProvider.Now());
+            }
+        }
+
+        private void ReloadActivities()
+        {
+            if (DateFrom != null && DateTo != null && DateFrom.Value <= DateTo.Value)
+            {
+                foreach (CategoryDurationViewModel item in activities)
+                    item.Reset();
+
+                applier.Apply(this, DateFrom.Value, DateTo.Value);
             }
         }
 

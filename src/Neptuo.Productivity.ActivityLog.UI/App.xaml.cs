@@ -64,7 +64,17 @@ namespace Neptuo.Productivity.ActivityLog
             eventManager = new DefaultEventManager();
 
             formatter = new SimpleFormatter();
-            navigator = new ApplicationNavigator(this, timer, this, eventManager, formatter, GetEventStoreFileName);
+            navigator = new ApplicationNavigator(
+                this, 
+                timer, 
+                this, 
+                eventManager, 
+                new ApplicationHistoryApplier(
+                    formatter, 
+                    GetEventStoreFileName
+                ), 
+                new DateTimeProvider()
+            );
             trayIcon = new ApplicationTrayIcon(navigator);
 
             SettingsExtension.Settings = Settings.Default;

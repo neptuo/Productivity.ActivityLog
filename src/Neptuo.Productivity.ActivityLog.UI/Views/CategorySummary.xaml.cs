@@ -35,6 +35,12 @@ namespace Neptuo.Productivity.ActivityLog.Views
             DataContext = viewModel;
         }
 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            DateFromBox.Focus();
+        }
+
         private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (WindowDrag.TryMove(e))

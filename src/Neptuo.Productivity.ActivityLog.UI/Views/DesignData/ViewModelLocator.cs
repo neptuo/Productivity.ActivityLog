@@ -124,7 +124,8 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                     categorySummary = new CategorySummaryViewModel(
                         resolver, 
                         new Timer(), 
-                        new DateTimeProvider()
+                        new DateTimeProvider(),
+                        new HistoryApplier()
                     );
                     EventManager.AddAll(categorySummary);
                     GenerateEventStream();

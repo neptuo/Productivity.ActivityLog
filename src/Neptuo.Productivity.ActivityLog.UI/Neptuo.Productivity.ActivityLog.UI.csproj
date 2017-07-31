@@ -83,6 +83,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ApplicationCategoryResolver.cs" />
+    <Compile Include="ApplicationHistoryApplier.cs" />
     <Compile Include="ApplicationNameProvider.cs" />
     <Compile Include="ApplicationNavigator.cs" />
     <Compile Include="ApplicationTrayIcon.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Services\ICategoryResolver.cs" />
     <Compile Include="Services\IconExtractor.cs" />
     <Compile Include="Services\IDateTimeProvider.cs" />
+    <Compile Include="Services\IHistoryApplier.cs" />
     <Compile Include="Services\INavigationHandler.cs" />
     <Compile Include="Services\INavigator.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
@@ -140,6 +142,7 @@
     <Compile Include="Views\Controls\WindowDrag.cs" />
     <Compile Include="Views\Converters\FormatConverter.cs" />
     <Compile Include="Views\DesignData\CategoryResolver.cs" />
+    <Compile Include="Views\DesignData\HistoryApplier.cs" />
     <Compile Include="Views\DesignData\NavigationHandler.cs" />
     <Compile Include="Views\DesignData\Navigator.cs" />
     <Compile Include="Views\DesignData\Synchronizer.cs" />

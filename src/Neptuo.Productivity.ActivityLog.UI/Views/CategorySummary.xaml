@@ -7,11 +7,29 @@
         xmlns:converters="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Converters"
         xmlns:ui="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Controls"
         mc:Ignorable="d" d:DataContext="{x:Static dd:ViewModelLocator.CategorySummary}"
-        Title="ActivityLog :: Category Summary" Icon="{StaticResource MainImage}" SizeToContent="WidthAndHeight" MinWidth="200" MinHeight="200"
+        Title="ActivityLog :: Category Summary" Icon="{StaticResource MainImage}" SizeToContent="WidthAndHeight" MinWidth="500" MinHeight="600"
         ResizeMode="CanResizeWithGrip" Background="{StaticResource BackgroundBrush}"
         PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown" 
         Left="{ui:Settings CategorySummaryWindowLeft, IsTwoWayMode=True}" Top="{ui:Settings CategorySummaryWindowTop, IsTwoWayMode=True}">
     <Grid Margin="8">
-        <ui:PieChart ItemsSource="{Binding Activities}" Margin="10" Thickness="30" ValuePath="DurationRaw" ForegroundPath="ColorBrush" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Style="{StaticResource EditorPanelStyle}" Grid.Row="0" Grid.Column="0">
+            <Label Target="{Binding ElementName=DateFromBox}" Content="Date from:" />
+            <TextBox x:Name="DateFromBox" Text="{Binding DateFrom}" />
+        </StackPanel>
+        <StackPanel Style="{StaticResource EditorPanelStyle}" Grid.Row="0" Grid.Column="2">
+            <Label Target="{Binding ElementName=DateToBox}" Content="Date from:" />
+            <TextBox x:Name="DateToBox" Text="{Binding DateTo}" />
+        </StackPanel>
+
+        <ui:PieChart ItemsSource="{Binding Activities}" Thickness="30" ValuePath="DurationRaw" ForegroundPath="ColorBrush" Grid.Row="1" Grid.ColumnSpan="3" />
     </Grid>
 </Window>

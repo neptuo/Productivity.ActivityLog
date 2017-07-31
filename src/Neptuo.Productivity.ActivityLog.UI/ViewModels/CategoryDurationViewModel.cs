@@ -79,5 +79,10 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
             if (IsForeground)
                 Duration = lastDuration + (now - lastStartedAt);
         }
+
+        public void Reset()
+        {
+            Duration = TimeSpan.Zero;
+        }
     }
 }

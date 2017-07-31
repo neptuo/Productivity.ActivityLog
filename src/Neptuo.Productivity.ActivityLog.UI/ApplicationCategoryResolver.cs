@@ -36,15 +36,15 @@ namespace Neptuo.Productivity.ActivityLog
 
         public static bool IsMatch(string value, string pattern)
         {
-            if (!string.IsNullOrEmpty(value))
-            {
-                if (string.IsNullOrEmpty(pattern))
-                    return false;
+            if (string.IsNullOrEmpty(value))
+                return string.IsNullOrEmpty(pattern);
 
-                Regex regex = new Regex("^" + pattern.Replace("*", ".*?") + "$");
-                if (!regex.IsMatch(value))
-                    return false;
-            }
+            if (string.IsNullOrEmpty(pattern))
+                return false;
+
+            Regex regex = new Regex("^" + pattern.Replace(@"\", @"\\").Replace("*", ".*?") + "$");
+            if (!regex.IsMatch(value))
+                return false;
 
             return true;
         }

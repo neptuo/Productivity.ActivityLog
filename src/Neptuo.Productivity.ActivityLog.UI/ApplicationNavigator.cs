@@ -25,8 +25,8 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly ITimer timer;
         private readonly ISynchronizer synchronizer;
         private readonly IEventHandlerCollection eventHandlers;
-        private readonly IFormatter formatter;
-        private readonly Func<DateTime, string> eventStoreFileNameGetter;
+        private readonly IHistoryApplier historyApplier;
+        private readonly IDateTimeProvider dateTimeProvider;
         private readonly WindowContextFactory contextFactory;
 
         private WindowContext<object, CategorySummary, CategorySummaryViewModel> todayCategory;
@@ -34,56 +34,34 @@ namespace Neptuo.Productivity.ActivityLog
         private WindowContext<bool, Configuration, ConfigurationViewModel> configuration;
         private WindowContext<ICategory, CategoryEdit, CategoryEditViewModel> categoryEdit;
 
-        public ApplicationNavigator(App application, ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IFormatter formatter, Func<DateTime, string> eventStoreFileNameGetter)
+        public ApplicationNavigator(App application, ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IHistoryApplier historyApplier, IDateTimeProvider dateTimeProvider)
         {
             Ensure.NotNull(application, "application");
             Ensure.NotNull(timer, "timer");
             Ensure.NotNull(synchronizer, "synchronizer");
             Ensure.NotNull(eventHandlers, "eventHandlers");
-            Ensure.NotNull(formatter, "formatter");
-            Ensure.NotNull(eventStoreFileNameGetter, "eventStoreFileNameGetter");
+            Ensure.NotNull(historyApplier, "historyApplier");
+            Ensure.NotNull(dateTimeProvider, "dateTimeProvider");
             this.application = application;
             this.timer = timer;
             this.synchronizer = synchronizer;
             this.eventHandlers = eventHandlers;
-            this.formatter = formatter;
-            this.eventStoreFileNameGetter = eventStoreFileNameGetter;
+            this.historyApplier = historyApplier;
+            this.dateTimeProvider = dateTimeProvider;
             this.contextFactory = new WindowContextFactory(eventHandlers, synchronizer);
         }
-
-        private void ApplyEvents(object viewModel, DateTime day)
-        {
-            string todayFile = eventStoreFileNameGetter(day);
-            if (File.Exists(todayFile))
-            {
-                using (Stream file = File.OpenRead(todayFile))
-                {
-                    IDeserializerContext context = new DefaultDeserializerContext(typeof(IEnumerable<IEvent>));
-                    if (formatter.TryDeserialize(file, context))
-                    {
-                        foreach (IEvent output in (IEnumerable<IEvent>)context.Output)
-                        {
-                            if (output is ActivityStarted started && viewModel is IEventHandler<ActivityStarted> startedHandler)
-                                startedHandler.HandleAsync(started).Wait();
-                            else if (output is ActivityEnded ended && viewModel is IEventHandler<ActivityEnded> endedHandler)
-                                endedHandler.HandleAsync(ended).Wait();
-                        }
-                    }
-                }
-            }
-        }
-
+        
         public Task TodayOverview()
         {
             if (categorySummary == null || categorySummary.IsDisposed)
             {
                 TodayOverviewViewModel viewModel = new TodayOverviewViewModel(
                     timer,
-                    new DateTimeProvider(),
+                    dateTimeProvider,
                     new ApplicationNameProvider()
                 );
 
-                ApplyEvents(viewModel, DateTime.Today);
+                historyApplier.Apply(viewModel, dateTimeProvider.Now());
 
                 TodayOverview window = new TodayOverview(viewModel, this);
                 categorySummary = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window);
@@ -105,13 +83,12 @@ namespace Neptuo.Productivity.ActivityLog
                 CategorySummaryViewModel viewModel = new CategorySummaryViewModel(
                     new ApplicationCategoryResolver(Settings.Default),
                     timer,
-                    new DateTimeProvider()
+                    dateTimeProvider,
+                    historyApplier
                 );
 
                 foreach (ICategory category in Settings.Default.Categories)
                     viewModel.Activities.Add(new CategoryDurationViewModel(category));
-
-                ApplyEvents(viewModel, DateTime.Today);
 
                 CategorySummary window = new CategorySummary(viewModel);
                 todayCategory = contextFactory.Create<object, CategorySummary, CategorySummaryViewModel>(window);
