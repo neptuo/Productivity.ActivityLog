@@ -66,8 +66,9 @@ namespace Neptuo.Productivity.ActivityLog
                 TodayOverview window = new TodayOverview(viewModel, this);
                 categorySummary = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window);
 
-                categorySummary.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer));
-                categorySummary.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer));
+                categorySummary
+                    .AddUiThreadHandler<ActivityStarted>(viewModel)
+                    .AddUiThreadHandler<ActivityEnded>(viewModel);
             }
 
             categorySummary.Window.Show();
@@ -90,11 +91,14 @@ namespace Neptuo.Productivity.ActivityLog
                 foreach (ICategory category in Settings.Default.Categories)
                     viewModel.Activities.Add(new CategoryDurationViewModel(category));
 
+                viewModel.DateFrom = viewModel.DateTo = dateTimeProvider.Now();
+
                 CategorySummary window = new CategorySummary(viewModel);
                 todayCategory = contextFactory.Create<object, CategorySummary, CategorySummaryViewModel>(window);
 
-                todayCategory.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityStarted>(viewModel, synchronizer));
-                todayCategory.UiThreadHandlers.Add(eventHandlers.AddUiThread<ActivityEnded>(viewModel, synchronizer));
+                todayCategory
+                    .AddUiThreadHandler<ActivityStarted>(viewModel)
+                    .AddUiThreadHandler<ActivityEnded>(viewModel);
             }
 
             todayCategory.Window.Show();
@@ -290,6 +294,12 @@ namespace Neptuo.Productivity.ActivityLog
                 Window = window;
                 Window.Closed += OnWindowClosed;
                 UiThreadHandlers = new List<UiThreadEventHandler>();
+            }
+
+            public WindowContext<TResult, TWindow, TViewModel> AddUiThreadHandler<TEvent>(IEventHandler<TEvent> handler)
+            {
+                UiThreadHandlers.Add(eventHandlers.AddUiThread(handler, synchronizer));
+                return this;
             }
 
             private void OnTaskCompleted(Task<TResult> task)
