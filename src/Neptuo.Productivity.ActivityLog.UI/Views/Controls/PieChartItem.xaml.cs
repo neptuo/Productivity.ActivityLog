@@ -37,17 +37,17 @@ namespace Neptuo.Productivity.ActivityLog.Views.Controls
             pc.NotifyUpdate();
         }
 
-        public int Value
+        public double Value
         {
-            get { return (int)GetValue(ValueProperty); }
+            get { return (double)GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
         }
 
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
             "Value",
-            typeof(int),
+            typeof(double),
             typeof(PieChartItem),
-            new PropertyMetadata(0, OnValueChanged)
+            new PropertyMetadata(0d, OnValueChanged)
         );
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
