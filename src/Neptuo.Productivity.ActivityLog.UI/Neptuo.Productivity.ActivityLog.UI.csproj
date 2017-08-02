@@ -186,7 +186,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\IViewModel.cs" />
+    <Compile Include="Views\IView.cs" />
     <Compile Include="Views\CategorySummary.xaml.cs">
       <DependentUpon>CategorySummary.xaml</DependentUpon>
     </Compile>

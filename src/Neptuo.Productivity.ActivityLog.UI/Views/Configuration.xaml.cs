@@ -20,7 +20,7 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// <summary>
     /// Interaction logic for Configuration.xaml
     /// </summary>
-    public partial class Configuration : Window, IViewModel<ConfigurationViewModel>
+    public partial class Configuration : Window, IView<ConfigurationViewModel>
     {
         public ConfigurationViewModel ViewModel
         {

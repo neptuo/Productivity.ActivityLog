@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog.Views
 {
-    public interface IViewModel<T>
+    public interface IView<T>
     {
         T ViewModel { get; }
     }

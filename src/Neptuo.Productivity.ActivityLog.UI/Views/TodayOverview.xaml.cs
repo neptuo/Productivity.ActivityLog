@@ -25,9 +25,8 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class TodayOverview : Window, IViewModel<TodayOverviewViewModel>
+    public partial class TodayOverview : Window, IView<TodayOverviewViewModel>
     {
-        private readonly INavigator navigator;
         private readonly DispatcherHelper dispatcher;
 
         public TodayOverviewViewModel ViewModel
@@ -35,11 +34,9 @@ namespace Neptuo.Productivity.ActivityLog.Views
             get { return (TodayOverviewViewModel)DataContext; }
         }
 
-        public TodayOverview(TodayOverviewViewModel viewModel, INavigator navigator)
+        public TodayOverview(TodayOverviewViewModel viewModel)
         {
             Ensure.NotNull(viewModel, "viewModel");
-            Ensure.NotNull(navigator, "navigator");
-            this.navigator = navigator;
 
             InitializeComponent();
 
@@ -107,11 +104,6 @@ namespace Neptuo.Productivity.ActivityLog.Views
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void Configuration_Click(object sender, RoutedEventArgs e)
-        {
-            navigator.Configuration();
         }
     }
 }

@@ -63,7 +63,7 @@ namespace Neptuo.Productivity.ActivityLog
 
                 historyApplier.Apply(viewModel, dateTimeProvider.Now());
 
-                TodayOverview window = new TodayOverview(viewModel, this);
+                TodayOverview window = new TodayOverview(viewModel);
                 categorySummary = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window);
 
                 categorySummary
@@ -258,20 +258,20 @@ namespace Neptuo.Productivity.ActivityLog
             }
 
             public WindowContext<TResult, TWindow, TViewModel> Create<TResult, TWindow, TViewModel>(TWindow window)
-                where TWindow : Window, IViewModel<TViewModel>
+                where TWindow : Window, IView<TViewModel>
             {
                 return new WindowContext<TResult, TWindow, TViewModel>(window, eventHandlers, synchronizer);
             }
 
             public WindowContext<TResult, TWindow, TViewModel> Create<TResult, TWindow, TViewModel>(TWindow window, TaskCompletionSource<TResult> completionSource)
-                where TWindow : Window, IViewModel<TViewModel>
+                where TWindow : Window, IView<TViewModel>
             {
                 return new WindowContext<TResult, TWindow, TViewModel>(window, eventHandlers, synchronizer, completionSource);
             }
         }
 
         private class WindowContext<TResult, TWindow, TViewModel> : DisposableBase
-            where TWindow : Window, IViewModel<TViewModel>
+            where TWindow : Window, IView<TViewModel>
         {
             private IEventHandlerCollection eventHandlers;
             private ISynchronizer synchronizer;

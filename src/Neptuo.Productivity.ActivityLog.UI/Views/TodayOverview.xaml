@@ -26,9 +26,13 @@
         </Style>
         <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource PlainButtonStyle}">
             <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-            <Setter Property="Background" Value="Red" />
             <Setter Property="Padding" Value="4,1" />
             <Setter Property="BorderThickness" Value="0,0,0,0" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <Style x:Key="DurationStyle" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -61,9 +65,6 @@
                 </ItemsControl>
             </StackPanel>
             <StackPanel Style="{StaticResource ButtonContainerStyle}">
-                <Button x:Name="Configuration" ToolTip="Configuration &amp; Help (F1)" Click="Configuration_Click" Style="{StaticResource PlainButtonStyle}" Background="Transparent">
-                    <Image Source="{StaticResource ConfigurationImage}" Width="12" />
-                </Button>
                 <Button x:Name="Close" Content="X" ToolTip="Close (Esc)" Click="Close_Click" Style="{StaticResource CloseButtonStyle}" />
             </StackPanel>
         </Grid>

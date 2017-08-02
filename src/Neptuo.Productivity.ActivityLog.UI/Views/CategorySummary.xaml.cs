@@ -20,7 +20,7 @@ namespace Neptuo.Productivity.ActivityLog.Views
     /// <summary>
     /// Interaction logic for TodayCategory.xaml
     /// </summary>
-    public partial class CategorySummary : Window, IViewModel<CategorySummaryViewModel>
+    public partial class CategorySummary : Window, IView<CategorySummaryViewModel>
     {
         public CategorySummaryViewModel ViewModel
         {
