@@ -127,6 +127,10 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                         new DateTimeProvider(),
                         new HistoryApplier()
                     );
+
+                    foreach (ICategory category in resolver.ApplicationPathToCategory.Values.Distinct())
+                        categorySummary.Activities.Add(new CategoryDurationViewModel(category));
+
                     EventManager.AddAll(categorySummary);
                     GenerateEventStream();
                 }

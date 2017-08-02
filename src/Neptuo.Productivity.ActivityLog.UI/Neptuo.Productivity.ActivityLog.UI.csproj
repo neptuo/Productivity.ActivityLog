@@ -140,6 +140,7 @@
     </Compile>
     <Compile Include="Views\Controls\SettingsExtension.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
+    <Compile Include="Views\Converters\ContrastColorConverter.cs" />
     <Compile Include="Views\Converters\FormatConverter.cs" />
     <Compile Include="Views\DesignData\CategoryResolver.cs" />
     <Compile Include="Views\DesignData\HistoryApplier.cs" />
