@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog.Views.DesignData
 {
-    internal class NavigationHandler<T> : INavigationHandler<T>
+    internal class NavigationContext<T> : INavigationContext<T>
     {
-        public void SetResult()
+        public void Close()
         {
             throw new NotImplementedException();
         }
 
-        public void SetResult(T result)
+        public void Close(T result)
         {
             throw new NotImplementedException();
         }
     }
 
-    internal class NavigationHandler : NavigationHandler<object>
+    internal class NavigationContext : NavigationContext<object>
     { }
 }

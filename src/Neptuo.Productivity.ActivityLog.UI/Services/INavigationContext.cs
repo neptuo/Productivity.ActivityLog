@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog.Services
 {
-    public interface INavigationHandler
+    public interface INavigationContext
     {
-        void SetResult();
+        void Close();
     }
 
-    public interface INavigationHandler<T> : INavigationHandler
+    public interface INavigationContext<T> : INavigationContext
     {
-        void SetResult(T result);
+        void Close(T result);
     }
 }

@@ -45,7 +45,7 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             {
                 if (configuration == null)
                 {
-                    configuration = new ConfigurationViewModel(new Navigator(), Settings.Default, new NavigationHandler<bool>());
+                    configuration = new ConfigurationViewModel(new Navigator(), Settings.Default, new NavigationContext<bool>());
                     configuration.Categories.Items.Add(new CategoryViewModel
                     {
                         Color = Colors.Red,
@@ -75,7 +75,7 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
             {
                 if (categoryEdit == null)
                 {
-                    categoryEdit = new CategoryEditViewModel(new NavigationHandler<ICategory>())
+                    categoryEdit = new CategoryEditViewModel(new NavigationContext<ICategory>())
                     {
                         Color = Colors.Red,
                         Name = "Work"

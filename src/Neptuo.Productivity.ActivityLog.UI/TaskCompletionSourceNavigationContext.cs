@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Neptuo.Productivity.ActivityLog
 {
-    public class TaskCompletionSourceNavigationHandler : TaskCompletionSourceNavigationHandler<object>
+    public class TaskCompletionSourceNavigationContext : TaskCompletionSourceNavigationHandler<object>
     {
-        public TaskCompletionSourceNavigationHandler(TaskCompletionSource<object> source) 
+        public TaskCompletionSourceNavigationContext(TaskCompletionSource<object> source) 
             : base(source)
         { }
     }
 
-    public class TaskCompletionSourceNavigationHandler<T> : INavigationHandler<T>
+    public class TaskCompletionSourceNavigationHandler<T> : INavigationContext<T>
     {
         private readonly TaskCompletionSource<T> source;
 
@@ -25,12 +25,12 @@ namespace Neptuo.Productivity.ActivityLog
             this.source = source;
         }
 
-        public void SetResult(T result)
+        public void Close(T result)
         {
             source.SetResult(result);
         }
 
-        public void SetResult()
+        public void Close()
         {
             source.SetResult(default(T));
         }

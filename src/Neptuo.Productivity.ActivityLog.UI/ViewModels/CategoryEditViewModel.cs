@@ -18,7 +18,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
         public ICommand RemoveRule { get; private set; }
         public ICommand Save { get; private set; }
 
-        public CategoryEditViewModel(INavigationHandler<ICategory> handler)
+        public CategoryEditViewModel(INavigationContext<ICategory> handler)
         {
             CreateRule = new DelegateCommand(() => Rules.Add(new RuleViewModel()
             {

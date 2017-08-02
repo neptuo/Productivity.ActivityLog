@@ -17,7 +17,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
         public CategoryListViewModel Categories { get; private set; }
         public ICommand Save { get; private set; }
 
-        public ConfigurationViewModel(INavigator navigator, ISettings settings, INavigationHandler<bool> handler)
+        public ConfigurationViewModel(INavigator navigator, ISettings settings, INavigationContext<bool> handler)
         {
             Version = VersionInfo.Version + VersionInfo.Preview;
             Categories = new CategoryListViewModel(navigator);

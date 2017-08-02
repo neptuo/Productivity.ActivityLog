@@ -14,9 +14,9 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels.Commands
     public class SaveCategoryEditCommand : Command, IDisposable
     {
         private readonly CategoryEditViewModel viewModel;
-        private readonly INavigationHandler<ICategory> handler;
+        private readonly INavigationContext<ICategory> handler;
 
-        public SaveCategoryEditCommand(CategoryEditViewModel viewModel, INavigationHandler<ICategory> handler)
+        public SaveCategoryEditCommand(CategoryEditViewModel viewModel, INavigationContext<ICategory> handler)
         {
             Ensure.NotNull(viewModel, "viewModel");
             Ensure.NotNull(handler, "handler");
@@ -38,7 +38,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels.Commands
 
         public override void Execute()
         {
-            handler.SetResult(viewModel);
+            handler.Close(viewModel);
         }
 
         public void Dispose()
