@@ -1,35 +1,22 @@
-﻿using Neptuo.Diagnostics;
+﻿using Neptuo.Converters;
 using Neptuo.Events;
+using Neptuo.Exceptions.Handlers;
 using Neptuo.Formatters;
+using Neptuo.Formatters.Converters;
 using Neptuo.Productivity.ActivityLog.Data;
 using Neptuo.Productivity.ActivityLog.Formatters;
 using Neptuo.Productivity.ActivityLog.Properties;
 using Neptuo.Productivity.ActivityLog.Services;
+using Neptuo.Productivity.ActivityLog.Services.Exceptions;
 using Neptuo.Productivity.ActivityLog.Views.Controls;
+using Neptuo.Logging;
 using Neptuo.Windows.Threading;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using Application = System.Windows.Application;
-using NotifyIcon = System.Windows.Forms.NotifyIcon;
-using ContextMenu = System.Windows.Forms.ContextMenu;
-using MessageBox = System.Windows.MessageBox;
 using System.Windows.Threading;
-using Neptuo.Exceptions.Handlers;
-using Neptuo.Logging.Serialization.Formatters;
-using Neptuo.Logging;
-using Neptuo.Productivity.ActivityLog.Services.Exceptions;
-using Neptuo.Formatters.Converters;
-using Neptuo.Converters;
 
 namespace Neptuo.Productivity.ActivityLog
 {
@@ -49,8 +36,6 @@ namespace Neptuo.Productivity.ActivityLog
         private IExceptionHandler exceptionHandler;
         private ILog log;
 
-        public event Action Tick;
-
         public void Run(Action handler)
         {
             dispatcher.Run(handler);
@@ -65,15 +50,16 @@ namespace Neptuo.Productivity.ActivityLog
 
             formatter = new SimpleFormatter();
             navigator = new ApplicationNavigator(
-                this, 
-                timer, 
-                this, 
-                eventManager, 
+                this,
+                timer,
+                this,
+                eventManager,
                 new ApplicationHistoryApplier(
-                    formatter, 
+                    formatter,
                     GetEventStoreFileName
-                ), 
-                new DateTimeProvider()
+                ),
+                new DateTimeProvider(),
+                Settings.Default
             );
             trayIcon = new ApplicationTrayIcon(navigator);
 
@@ -99,6 +85,8 @@ namespace Neptuo.Productivity.ActivityLog
             await RecoverAsync(formatter);
 
             service = new DomainService(eventManager);
+
+            await navigator.RestorePreviousAsync();
         }
 
         private void BootstrapErrorHandler()
@@ -134,11 +122,12 @@ namespace Neptuo.Productivity.ActivityLog
 
         protected override void OnExit(ExitEventArgs e)
         {
+            Console.WriteLine(Windows.Count);
+
             timer.Dispose();
             service.Dispose();
-
-            if (trayIcon != null)
-                trayIcon.Dispose();
+            navigator.Dispose();
+            trayIcon.Dispose();
 
             base.OnExit(e);
         }

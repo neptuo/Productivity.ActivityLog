@@ -86,6 +86,8 @@
     <Compile Include="ApplicationHistoryApplier.cs" />
     <Compile Include="ApplicationNameProvider.cs" />
     <Compile Include="ApplicationNavigator.cs" />
+    <Compile Include="ApplicationNavigator.WindowContext.cs" />
+    <Compile Include="ApplicationNavigator.WindowContextFactory.cs" />
     <Compile Include="ApplicationTrayIcon.cs" />
     <Compile Include="Data\CategoryListModel.cs" />
     <Compile Include="DateTimeProvider.cs" />

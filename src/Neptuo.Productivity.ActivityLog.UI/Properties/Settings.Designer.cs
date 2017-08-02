@@ -82,5 +82,29 @@ namespace Neptuo.Productivity.ActivityLog.Properties {
                 this["CategorySummaryWindowTop"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsMainWindowOpened {
+            get {
+                return ((bool)(this["IsMainWindowOpened"]));
+            }
+            set {
+                this["IsMainWindowOpened"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsCategorySummaryOpened {
+            get {
+                return ((bool)(this["IsCategorySummaryOpened"]));
+            }
+            set {
+                this["IsCategorySummaryOpened"] = value;
+            }
+        }
     }
 }

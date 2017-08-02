@@ -19,7 +19,7 @@ using System.Windows.Media;
 
 namespace Neptuo.Productivity.ActivityLog
 {
-    internal class ApplicationNavigator : DisposableBase, INavigator
+    internal partial class ApplicationNavigator : DisposableBase, INavigator
     {
         private readonly App application;
         private readonly ITimer timer;
@@ -28,13 +28,14 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly IHistoryApplier historyApplier;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly WindowContextFactory contextFactory;
+        private readonly Settings settings;
 
         private WindowContext<object, CategorySummary, CategorySummaryViewModel> todayCategory;
         private WindowContext<object, TodayOverview, TodayOverviewViewModel> categorySummary;
         private WindowContext<bool, Configuration, ConfigurationViewModel> configuration;
         private WindowContext<ICategory, CategoryEdit, CategoryEditViewModel> categoryEdit;
 
-        public ApplicationNavigator(App application, ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IHistoryApplier historyApplier, IDateTimeProvider dateTimeProvider)
+        public ApplicationNavigator(App application, ITimer timer, ISynchronizer synchronizer, IEventHandlerCollection eventHandlers, IHistoryApplier historyApplier, IDateTimeProvider dateTimeProvider, Settings settings)
         {
             Ensure.NotNull(application, "application");
             Ensure.NotNull(timer, "timer");
@@ -42,13 +43,15 @@ namespace Neptuo.Productivity.ActivityLog
             Ensure.NotNull(eventHandlers, "eventHandlers");
             Ensure.NotNull(historyApplier, "historyApplier");
             Ensure.NotNull(dateTimeProvider, "dateTimeProvider");
+            Ensure.NotNull(settings, "settings");
             this.application = application;
             this.timer = timer;
             this.synchronizer = synchronizer;
             this.eventHandlers = eventHandlers;
             this.historyApplier = historyApplier;
             this.dateTimeProvider = dateTimeProvider;
-            this.contextFactory = new WindowContextFactory(eventHandlers, synchronizer);
+            this.settings = settings;
+            this.contextFactory = new WindowContextFactory(eventHandlers, synchronizer, settings);
         }
         
         public Task TodayOverview()
@@ -64,7 +67,7 @@ namespace Neptuo.Productivity.ActivityLog
                 historyApplier.Apply(viewModel, dateTimeProvider.Now());
 
                 TodayOverview window = new TodayOverview(viewModel);
-                categorySummary = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window);
+                categorySummary = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window, nameof(Settings.IsMainWindowOpened));
 
                 categorySummary
                     .AddUiThreadHandler<ActivityStarted>(viewModel)
@@ -94,7 +97,7 @@ namespace Neptuo.Productivity.ActivityLog
                 viewModel.DateFrom = viewModel.DateTo = dateTimeProvider.Now();
 
                 CategorySummary window = new CategorySummary(viewModel);
-                todayCategory = contextFactory.Create<object, CategorySummary, CategorySummaryViewModel>(window);
+                todayCategory = contextFactory.Create<object, CategorySummary, CategorySummaryViewModel>(window, nameof(Settings.IsCategorySummaryOpened));
 
                 todayCategory
                     .AddUiThreadHandler<ActivityStarted>(viewModel)
@@ -231,125 +234,35 @@ namespace Neptuo.Productivity.ActivityLog
 
         public void Exit()
         {
+            categorySummary?.DetachSettingsKey();
+            todayCategory?.DetachSettingsKey();
+            configuration?.DetachSettingsKey();
+            categoryEdit?.DetachSettingsKey();
+
             application.Shutdown();
+        }
+
+        internal Task RestorePreviousAsync()
+        {
+            if (settings.IsMainWindowOpened)
+                TodayOverview();
+
+            if (settings.IsCategorySummaryOpened)
+                CategorySummary();
+
+            return Task.CompletedTask;
         }
 
         protected override void DisposeManagedResources()
         {
             base.DisposeManagedResources();
 
+            settings.Save();
+
             categorySummary?.Dispose();
             todayCategory?.Dispose();
             configuration?.Dispose();
             categoryEdit?.Dispose();
-        }
-
-        private class WindowContextFactory
-        {
-            private readonly IEventHandlerCollection eventHandlers;
-            private readonly ISynchronizer synchronizer;
-
-            public WindowContextFactory(IEventHandlerCollection eventHandlers, ISynchronizer synchronizer)
-            {
-                Ensure.NotNull(eventHandlers, "eventHandlers");
-                Ensure.NotNull(synchronizer, "synchronizer");
-                this.eventHandlers = eventHandlers;
-                this.synchronizer = synchronizer;
-            }
-
-            public WindowContext<TResult, TWindow, TViewModel> Create<TResult, TWindow, TViewModel>(TWindow window)
-                where TWindow : Window, IView<TViewModel>
-            {
-                return new WindowContext<TResult, TWindow, TViewModel>(window, eventHandlers, synchronizer);
-            }
-
-            public WindowContext<TResult, TWindow, TViewModel> Create<TResult, TWindow, TViewModel>(TWindow window, TaskCompletionSource<TResult> completionSource)
-                where TWindow : Window, IView<TViewModel>
-            {
-                return new WindowContext<TResult, TWindow, TViewModel>(window, eventHandlers, synchronizer, completionSource);
-            }
-        }
-
-        private class WindowContext<TResult, TWindow, TViewModel> : DisposableBase
-            where TWindow : Window, IView<TViewModel>
-        {
-            private IEventHandlerCollection eventHandlers;
-            private ISynchronizer synchronizer;
-
-            public TWindow Window { get; private set; }
-            public TaskCompletionSource<TResult> CompletionSource { get; set; }
-            public List<UiThreadEventHandler> UiThreadHandlers { get; private set; }
-
-            public WindowContext(TWindow window, IEventHandlerCollection eventHandlers, ISynchronizer synchronizer)
-                : this(window, eventHandlers, synchronizer, new TaskCompletionSource<TResult>())
-            { }
-
-            public WindowContext(TWindow window, IEventHandlerCollection eventHandlers, ISynchronizer synchronizer, TaskCompletionSource<TResult> completionSource)
-            {
-                this.eventHandlers = eventHandlers;
-                this.synchronizer = synchronizer;
-
-                CompletionSource = completionSource;
-                CompletionSource.Task.ContinueWith(OnTaskCompleted);
-                Window = window;
-                Window.Closed += OnWindowClosed;
-                UiThreadHandlers = new List<UiThreadEventHandler>();
-            }
-
-            public WindowContext<TResult, TWindow, TViewModel> AddUiThreadHandler<TEvent>(IEventHandler<TEvent> handler)
-            {
-                UiThreadHandlers.Add(eventHandlers.AddUiThread(handler, synchronizer));
-                return this;
-            }
-
-            private void OnTaskCompleted(Task<TResult> task)
-            {
-                if (task.IsCompleted && !IsDisposed)
-                {
-                    synchronizer.Run(() =>
-                    {
-                        CompletionSource = null;
-                        Dispose();
-                    });
-                }
-            }
-
-            private void OnWindowClosed(object sender, EventArgs e)
-            {
-                Dispose();
-            }
-
-            protected override void DisposeManagedResources()
-            {
-                base.DisposeManagedResources();
-
-                if (CompletionSource != null)
-                {
-                    CompletionSource.SetResult(default(TResult));
-                    CompletionSource = null;
-                }
-
-                if (Window != null)
-                {
-                    Window.Closed -= OnWindowClosed;
-
-                    if (Window.IsVisible)
-                        Window.Close();
-
-                    if (Window.ViewModel != null && Window.ViewModel is IDisposable disposable)
-                        disposable.Dispose();
-
-                    Window = null;
-                }
-
-                if (UiThreadHandlers.Count > 0)
-                {
-                    foreach (UiThreadEventHandler handler in UiThreadHandlers)
-                        handler.Remove(eventHandlers);
-
-                    UiThreadHandlers.Clear();
-                }
-            }
         }
     }
 }
