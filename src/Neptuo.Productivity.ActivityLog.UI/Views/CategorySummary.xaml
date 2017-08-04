@@ -10,7 +10,7 @@
         Title="ActivityLog :: Category Summary" Icon="{StaticResource MainImage}" SizeToContent="WidthAndHeight" MinWidth="500" MinHeight="600"
         ResizeMode="CanResizeWithGrip" Background="{StaticResource BackgroundBrush}"
         PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown" 
-        Left="{ui:Settings CategorySummaryWindowLeft, IsTwoWayMode=True}" Top="{ui:Settings CategorySummaryWindowTop, IsTwoWayMode=True}">
+        Left="{ui:Settings CategorySummaryWindowLeft, Mode=TwoWay}" Top="{ui:Settings CategorySummaryWindowTop, Mode=TwoWay}">
     <Window.Resources>
         <converters:ContrastColorConverter x:Key="ContrastColorConverter" IsTargetBrush="True" />
     </Window.Resources>

@@ -11,7 +11,7 @@
         Title="ActivityLog :: Today Overview" Icon="{StaticResource MainImage}" Width="300" SizeToContent="Height"
         ResizeMode="CanMinimize" WindowStyle="None" ShowInTaskbar="False" Background="{StaticResource BackgroundBrush}"
         PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown"
-        Left="{ui:Settings MainWindowLeft, IsTwoWayMode=True}" Top="{ui:Settings MainWindowTop, IsTwoWayMode=True}">
+        Left="{ui:Settings MainWindowLeft, Mode=TwoWay}" Top="{ui:Settings MainWindowTop, Mode=TwoWay}">
     <Window.Resources>
         <CollectionViewSource x:Key="ActivitiesCollection" Source="{Binding Activities}">
             <CollectionViewSource.SortDescriptions>

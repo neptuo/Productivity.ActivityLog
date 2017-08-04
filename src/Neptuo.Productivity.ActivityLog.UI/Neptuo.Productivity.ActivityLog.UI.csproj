@@ -140,6 +140,7 @@
     <Compile Include="Views\Controls\PieChartItem.xaml.cs">
       <DependentUpon>PieChartItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\SettingsBindingMode.cs" />
     <Compile Include="Views\Controls\SettingsExtension.cs" />
     <Compile Include="Views\Controls\WindowDrag.cs" />
     <Compile Include="Views\Converters\ContrastColorConverter.cs" />

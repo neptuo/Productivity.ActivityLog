@@ -47,7 +47,7 @@ namespace Neptuo.Productivity.ActivityLog.Views.Controls
         /// <summary>
         /// Gets or sets if changed value should be automatically saved to settings.
         /// </summary>
-        public bool IsTwoWayMode { get; set; }
+        public SettingsBindingMode Mode { get; set; }
 
         /// <summary>
         /// Creates a new instance that provides value from <see cref="Settings"/> associated with <paramref name="key"/>.
@@ -71,11 +71,15 @@ namespace Neptuo.Productivity.ActivityLog.Views.Controls
             if (Converter != null)
                 value = Converter.Convert(value, property?.PropertyType ?? typeof(object), ConverterParameter, Thread.CurrentThread.CurrentUICulture);
 
-            if (IsTwoWayMode && property != null)
+            if (Mode == SettingsBindingMode.TwoWay)
             {
-                DependencyPropertyDescriptor
-                    .FromProperty(property, provideValueTarget.TargetObject.GetType())
-                    .AddValueChanged(provideValueTarget.TargetObject, OnPropertyChanged);
+                EnsureProperty();
+                if (property != null)
+                {
+                    DependencyPropertyDescriptor
+                        .FromProperty(property, provideValueTarget.TargetObject.GetType())
+                        .AddValueChanged(provideValueTarget.TargetObject, OnPropertyChanged);
+                }
             }
 
             return value;
@@ -116,6 +120,15 @@ namespace Neptuo.Productivity.ActivityLog.Views.Controls
             Debug.Assert(
                 typeof(Settings).GetProperty(key) != null,
                 $"Missing settings property '{key}'."
+            );
+        }
+
+        [Conditional("DEBUG")]
+        private void EnsureProperty()
+        {
+            Debug.Assert(
+                property != null,
+                $"TwoWay mode is available only '{nameof(DependencyProperty)}'."
             );
         }
     }
