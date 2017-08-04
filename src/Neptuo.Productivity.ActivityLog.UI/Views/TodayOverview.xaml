@@ -9,8 +9,8 @@
         xmlns:ui="clr-namespace:Neptuo.Productivity.ActivityLog.Views.Controls"
         mc:Ignorable="d" d:DataContext="{x:Static dd:ViewModelLocator.Overview}"
         Title="ActivityLog :: Today Overview" Icon="{StaticResource MainImage}" Width="300" SizeToContent="Height"
-        ResizeMode="CanMinimize" WindowStyle="None" Background="{StaticResource BackgroundBrush}"
-        PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown" 
+        ResizeMode="CanMinimize" WindowStyle="None" ShowInTaskbar="False" Background="{StaticResource BackgroundBrush}"
+        PreviewMouseDown="OnPreviewMouseDown" PreviewKeyDown="OnPreviewKeyDown"
         Left="{ui:Settings MainWindowLeft, IsTwoWayMode=True}" Top="{ui:Settings MainWindowTop, IsTwoWayMode=True}">
     <Window.Resources>
         <CollectionViewSource x:Key="ActivitiesCollection" Source="{Binding Activities}">
