@@ -106,5 +106,41 @@ namespace Neptuo.Productivity.ActivityLog.Properties {
                 this["IsCategorySummaryOpened"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public double ApplicationSummaryWindowLeft {
+            get {
+                return ((double)(this["ApplicationSummaryWindowLeft"]));
+            }
+            set {
+                this["ApplicationSummaryWindowLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public double ApplicationSummaryWindowTop {
+            get {
+                return ((double)(this["ApplicationSummaryWindowTop"]));
+            }
+            set {
+                this["ApplicationSummaryWindowTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsApplicationSummaryOpened {
+            get {
+                return ((bool)(this["IsApplicationSummaryOpened"]));
+            }
+            set {
+                this["IsApplicationSummaryOpened"] = value;
+            }
+        }
     }
 }

@@ -122,8 +122,8 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                     };
 
                     categorySummary = new CategorySummaryViewModel(
-                        resolver, 
-                        new Timer(), 
+                        resolver,
+                        new Timer(),
                         new DateTimeProvider(),
                         new HistoryApplier()
                     );
@@ -136,6 +136,24 @@ namespace Neptuo.Productivity.ActivityLog.Views.DesignData
                 }
 
                 return categorySummary;
+            }
+        }
+
+        private static ApplicationSummaryViewModel applicationSummary;
+
+        public static ApplicationSummaryViewModel ApplicationSummary
+        {
+            get
+            {
+                if (applicationSummary == null)
+                {
+                    applicationSummary = new ApplicationSummaryViewModel(new ApplicationNameProvider(), new HistoryApplier());
+
+                    EventManager.AddAll(applicationSummary);
+                    GenerateEventStream();
+                }
+
+                return applicationSummary;
             }
         }
 

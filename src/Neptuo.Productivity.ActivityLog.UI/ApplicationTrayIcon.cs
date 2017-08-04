@@ -33,6 +33,7 @@ namespace Neptuo.Productivity.ActivityLog
 
             icon.ContextMenu = new ContextMenu();
             icon.ContextMenu.MenuItems.Add("Today Overview", (sender, e) => navigator.TodayOverview());
+            icon.ContextMenu.MenuItems.Add("Application Summary", (sender, e) => navigator.ApplicationSummary());
             icon.ContextMenu.MenuItems.Add("Category Summary", (sender, e) => navigator.CategorySummary());
             icon.ContextMenu.MenuItems.Add("Configuration", (sender, e) => navigator.Configuration());
             icon.ContextMenu.MenuItems.Add("Exit", OnExitClick);

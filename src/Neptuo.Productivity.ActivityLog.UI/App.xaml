@@ -30,7 +30,7 @@
                 <Setter Property="Background" Value="{DynamicResource TextBoxBackgroundBrush}" />
                 <Setter Property="BorderThickness" Value="0,0,0,1" />
                 <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-                <Setter Property="Margin" Value="0,10" />
+                <Setter Property="Margin" Value="0,0,0,8" />
             </Style>
             <Style TargetType="CheckBox">
                 <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />

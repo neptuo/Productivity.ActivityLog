@@ -30,8 +30,9 @@ namespace Neptuo.Productivity.ActivityLog
         private readonly WindowContextFactory contextFactory;
         private readonly Settings settings;
 
-        private WindowContext<object, CategorySummary, CategorySummaryViewModel> todayCategory;
-        private WindowContext<object, TodayOverview, TodayOverviewViewModel> categorySummary;
+        private WindowContext<object, TodayOverview, TodayOverviewViewModel> todayOverview;
+        private WindowContext<object, CategorySummary, CategorySummaryViewModel> categorySummary;
+        private WindowContext<object, ApplicationSummary, ApplicationSummaryViewModel> applicationSummary;
         private WindowContext<bool, Configuration, ConfigurationViewModel> configuration;
         private WindowContext<ICategory, CategoryEdit, CategoryEditViewModel> categoryEdit;
 
@@ -56,7 +57,7 @@ namespace Neptuo.Productivity.ActivityLog
         
         public Task TodayOverview()
         {
-            if (categorySummary == null || categorySummary.IsDisposed)
+            if (todayOverview == null || todayOverview.IsDisposed)
             {
                 TodayOverviewViewModel viewModel = new TodayOverviewViewModel(
                     timer,
@@ -67,22 +68,22 @@ namespace Neptuo.Productivity.ActivityLog
                 historyApplier.Apply(viewModel, dateTimeProvider.Now());
 
                 TodayOverview window = new TodayOverview(viewModel);
-                categorySummary = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window, nameof(Settings.IsMainWindowOpened));
+                todayOverview = contextFactory.Create<object, TodayOverview, TodayOverviewViewModel>(window, nameof(Settings.IsMainWindowOpened));
 
-                categorySummary
+                todayOverview
                     .AddUiThreadHandler<ActivityStarted>(viewModel)
                     .AddUiThreadHandler<ActivityEnded>(viewModel);
             }
 
-            categorySummary.Window.Show();
-            categorySummary.Window.Activate();
+            todayOverview.Window.Show();
+            todayOverview.Window.Activate();
 
-            return categorySummary.CompletionSource.Task;
+            return todayOverview.CompletionSource.Task;
         }
 
         public Task CategorySummary()
         {
-            if (todayCategory == null || todayCategory.IsDisposed)
+            if (categorySummary == null || categorySummary.IsDisposed)
             {
                 CategorySummaryViewModel viewModel = new CategorySummaryViewModel(
                     new ApplicationCategoryResolver(Settings.Default),
@@ -97,17 +98,38 @@ namespace Neptuo.Productivity.ActivityLog
                 viewModel.DateFrom = viewModel.DateTo = dateTimeProvider.Now();
 
                 CategorySummary window = new CategorySummary(viewModel);
-                todayCategory = contextFactory.Create<object, CategorySummary, CategorySummaryViewModel>(window, nameof(Settings.IsCategorySummaryOpened));
+                categorySummary = contextFactory.Create<object, CategorySummary, CategorySummaryViewModel>(window, nameof(Settings.IsCategorySummaryOpened));
 
-                todayCategory
+                categorySummary
                     .AddUiThreadHandler<ActivityStarted>(viewModel)
                     .AddUiThreadHandler<ActivityEnded>(viewModel);
             }
 
-            todayCategory.Window.Show();
-            todayCategory.Window.Activate();
+            categorySummary.Window.Show();
+            categorySummary.Window.Activate();
 
-            return todayCategory.CompletionSource.Task;
+            return categorySummary.CompletionSource.Task;
+        }
+
+        public Task ApplicationSummary()
+        {
+            if(applicationSummary == null || applicationSummary.IsDisposed)
+            {
+                ApplicationSummaryViewModel viewModel = new ApplicationSummaryViewModel(
+                    new ApplicationNameProvider(),
+                    historyApplier
+                );
+
+                viewModel.DateFrom = viewModel.DateTo = dateTimeProvider.Now();
+
+                ApplicationSummary window = new ApplicationSummary(viewModel);
+                applicationSummary = contextFactory.Create<object, ApplicationSummary, ApplicationSummaryViewModel>(window, nameof(Settings.IsApplicationSummaryOpened));
+            }
+
+            applicationSummary.Window.Show();
+            applicationSummary.Window.Activate();
+
+            return applicationSummary.CompletionSource.Task;
         }
 
         public Task<bool> Configuration()
@@ -234,8 +256,8 @@ namespace Neptuo.Productivity.ActivityLog
 
         public void Exit()
         {
+            todayOverview?.DetachSettingsKey();
             categorySummary?.DetachSettingsKey();
-            todayCategory?.DetachSettingsKey();
             configuration?.DetachSettingsKey();
             categoryEdit?.DetachSettingsKey();
 
@@ -259,8 +281,8 @@ namespace Neptuo.Productivity.ActivityLog
 
             settings.Save();
 
+            todayOverview?.Dispose();
             categorySummary?.Dispose();
-            todayCategory?.Dispose();
             configuration?.Dispose();
             categoryEdit?.Dispose();
         }

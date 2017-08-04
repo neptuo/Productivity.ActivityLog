@@ -114,10 +114,12 @@
     <Compile Include="TaskCompletionSourceNavigationContext.cs" />
     <Compile Include="UiThreadEventHandler.cs" />
     <Compile Include="UiThreadTimer.cs" />
+    <Compile Include="ViewModels\ApplicationDurationViewModel.cs" />
     <Compile Include="ViewModels\CategoryEditViewModel.cs" />
     <Compile Include="ViewModels\CategoryDurationViewModel.cs" />
     <Compile Include="ViewModels\CategoryViewModel.cs" />
     <Compile Include="ViewModels\CategoryListViewModel.cs" />
+    <Compile Include="ViewModels\ApplicationSummaryViewModel.cs" />
     <Compile Include="ViewModels\Commands\MoveDownCommand.cs" />
     <Compile Include="ViewModels\Commands\MoveUpCommand.cs" />
     <Compile Include="ViewModels\Commands\SaveCategoryEditCommand.cs" />
@@ -125,6 +127,10 @@
     <Compile Include="ViewModels\ConfigurationViewModel.cs" />
     <Compile Include="ViewModels\RuleViewModel.cs" />
     <Compile Include="ViewModels\CategorySummaryViewModel.cs" />
+    <Compile Include="ViewModels\WindowTitleDurationViewModel.cs" />
+    <Compile Include="Views\ApplicationSummary.xaml.cs">
+      <DependentUpon>ApplicationSummary.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CategoryEdit.xaml.cs">
       <DependentUpon>CategoryEdit.xaml</DependentUpon>
     </Compile>
@@ -157,6 +163,10 @@
     <Compile Include="Views\Converters\BoolConverter.cs" />
     <Compile Include="Views\Converters\CuttingConverter.cs" />
     <Compile Include="Views\Converters\NullConverter.cs" />
+    <Page Include="Views\ApplicationSummary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CategoryEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
