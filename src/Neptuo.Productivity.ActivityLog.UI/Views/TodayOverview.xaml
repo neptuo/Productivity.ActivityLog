@@ -25,7 +25,7 @@
             <Setter Property="Orientation" Value="Horizontal" />
         </Style>
         <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource PlainButtonStyle}">
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource InactiveBrush}" />
             <Setter Property="Padding" Value="4,1" />
             <Setter Property="BorderThickness" Value="0,0,0,0" />
             <Style.Triggers>
