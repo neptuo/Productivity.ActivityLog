@@ -49,8 +49,9 @@ namespace Neptuo.Productivity.ActivityLog
                 {
                     if (currentProcessId != lastProcessId)
                     {
-                        if (TryGetApplicationPath((int)currentProcessId, out string currentPath))
+                        if (TryGetApplicationPath((int)currentProcessId, out int targetProcessId, out string currentPath))
                         {
+                            currentProcessId = (uint)targetProcessId;
                             if (lastProcessId > 0)
                             {
                                 // Process changed and we know last process.
@@ -72,7 +73,7 @@ namespace Neptuo.Productivity.ActivityLog
                                 ));
                             }
                         }
-                        else if(lastProcessId > 0)
+                        else if (lastProcessId > 0)
                         {
                             Changed?.Invoke(this, ProcessChangedEventArgs.ForProcessChange(
                                 (int)lastProcessId,
@@ -95,12 +96,14 @@ namespace Neptuo.Productivity.ActivityLog
                 // Checking title.
                 if (currentTitle != lastTitle)
                 {
-                    if (TryGetApplicationPath((int)currentProcessId, out string currentPath))
+                    if (TryGetApplicationPath((int)currentProcessId, out int targetProcessId, out string currentPath))
                     {
+                        currentProcessId = (uint)targetProcessId;
+
                         // Title changed.
                         Changed?.Invoke(this, ProcessChangedEventArgs.ForTitleChange(
-                            (int)currentProcessId, 
-                            lastTitle, 
+                            (int)currentProcessId,
+                            lastTitle,
                             currentTitle
                         ));
 
@@ -111,10 +114,13 @@ namespace Neptuo.Productivity.ActivityLog
             }
         }
 
-        private bool TryGetApplicationPath(int processId, out string applicationPath)
+        private bool TryGetApplicationPath(int processId, out int targetProcessId, out string applicationPath)
         {
             if (processCache.TryGetValue(processId, out applicationPath))
+            {
+                targetProcessId = processId;
                 return true;
+            }
 
             try
             {
@@ -123,15 +129,21 @@ namespace Neptuo.Productivity.ActivityLog
                 {
                     Process child = Win32.FindChildProcess(process.MainWindowHandle, p => !hostingProcessNames.Contains(p.ProcessName));
                     if (child != null)
-                        process = child;
+                    {
+                        targetProcessId = child.Id;
+                        applicationPath = child.MainModule?.FileName;
+                        return true;
+                    }
                 }
 
                 processCache[processId] = applicationPath = process.MainModule?.FileName;
+                targetProcessId = processId;
                 return true;
             }
             catch (Exception e)
             {
                 applicationPath = null;
+                targetProcessId = -1;
                 return false;
             }
         }
