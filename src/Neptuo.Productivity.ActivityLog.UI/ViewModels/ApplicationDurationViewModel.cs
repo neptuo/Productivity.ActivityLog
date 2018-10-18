@@ -1,6 +1,7 @@
 ﻿using Neptuo.Observables;
 using Neptuo.Observables.Collections;
 using Neptuo.Productivity.ActivityLog.Services;
+using Neptuo.Productivity.ActivityLog.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
     public class ApplicationDurationViewModel : ObservableObject
     {
-        private TimeSpan lastDuration;
-        private DateTime lastStartedAt;
-        private DateTime lastEndedAt;
+        private readonly Duration durationCalculator = new Duration();
 
         public ImageSource Icon { get; private set; }
         public string Path { get; private set; }
@@ -54,15 +53,14 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
         public void StartAt(string windowTitle, DateTime startedAt)
         {
-            lastStartedAt = startedAt;
+            durationCalculator.StartAt(startedAt);
             GetViewModel(windowTitle).StartAt(startedAt);
         }
 
         public void StopAt(string windowTitle, DateTime endedAt)
         {
-            lastEndedAt = endedAt;
-            lastDuration = lastDuration + (lastEndedAt - lastStartedAt);
-            Duration = lastDuration;
+            durationCalculator.StopAt(endedAt);
+            Duration = durationCalculator.TimeSpan;
 
             GetViewModel(windowTitle).StopAt(endedAt);
         }

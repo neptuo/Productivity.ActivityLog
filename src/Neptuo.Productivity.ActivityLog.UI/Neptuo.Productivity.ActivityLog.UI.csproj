@@ -109,6 +109,7 @@
     <Compile Include="Services\INavigator.cs" />
     <Compile Include="Services\ISynchronizer.cs" />
     <Compile Include="Services\ITimer.cs" />
+    <Compile Include="Services\Models\Duration.cs" />
     <Compile Include="Services\Models\ICategory.cs" />
     <Compile Include="Services\Models\IRule.cs" />
     <Compile Include="TaskCompletionSourceNavigationContext.cs" />

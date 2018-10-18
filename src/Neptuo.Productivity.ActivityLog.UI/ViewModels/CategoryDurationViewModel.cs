@@ -1,5 +1,4 @@
-﻿using Neptuo;
-using Neptuo.Observables;
+﻿using Neptuo.Observables;
 using Neptuo.Productivity.ActivityLog.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -12,9 +11,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
     public class CategoryDurationViewModel : ObservableObject
     {
-        private TimeSpan lastDuration;
-        private DateTime lastStartedAt;
-        private DateTime lastEndedAt;
+        private readonly Duration durationCalculator = new Duration();
 
         public string Name { get; private set; }
         public Brush ColorBrush { get; private set; }
@@ -63,24 +60,20 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
         public void StartAt(DateTime startedAt)
         {
             IsForeground = true;
-            lastStartedAt = startedAt;
+            durationCalculator.StartAt(startedAt);
         }
 
         public void StopAt(DateTime endedAt)
         {
-            if (lastStartedAt > DateTime.MinValue)
-            {
-                IsForeground = false;
-                lastEndedAt = endedAt;
-                lastDuration = lastDuration + (lastEndedAt - lastStartedAt);
-                Duration = lastDuration;
-            }
+            IsForeground = false;
+            durationCalculator.StopAt(endedAt);
+            Duration = durationCalculator.TimeSpan;
         }
 
         public void Update(DateTime now)
         {
             if (IsForeground)
-                Duration = lastDuration + (now - lastStartedAt);
+                Duration = durationCalculator.Update(now);
         }
 
         public void Reset()

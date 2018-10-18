@@ -1,5 +1,5 @@
-﻿using Neptuo;
-using Neptuo.Observables;
+﻿using Neptuo.Observables;
+using Neptuo.Productivity.ActivityLog.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,7 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 {
     public class WindowTitleDurationViewModel : ObservableObject
     {
-        private TimeSpan lastDuration;
-        private DateTime lastStartedAt;
-        private DateTime lastEndedAt;
+        private readonly Duration durationCalculator = new Duration();
 
         public string Title { get; private set; }
 
@@ -43,14 +41,13 @@ namespace Neptuo.Productivity.ActivityLog.ViewModels
 
         public void StartAt(DateTime startedAt)
         {
-            lastStartedAt = startedAt;
+            durationCalculator.StartAt(startedAt);
         }
 
         public void StopAt(DateTime endedAt)
         {
-            lastEndedAt = endedAt;
-            lastDuration = lastDuration + (lastEndedAt - lastStartedAt);
-            Duration = lastDuration;
+            durationCalculator.StopAt(endedAt);
+            Duration = durationCalculator.TimeSpan;
         }
     }
 }
